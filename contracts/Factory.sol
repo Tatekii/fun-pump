@@ -28,6 +28,12 @@ contract Factory is IFactory {
         _;
     }
 
+    modifier onlyTokenCreator(address _token) {
+        TokenSale memory curForSale = tokenForSale[_token];
+        require(msg.sender == curForSale.creator, "Not creator");
+        _;
+    }
+
     modifier whenNotPaused() {
         require(!paused, "Contract paused");
         _;
@@ -67,22 +73,37 @@ contract Factory is IFactory {
     }
 
     // View functions
-    function calculateFees(uint256 _amount) public view override returns (uint256) {
+    function calculateFees(
+        uint256 _amount
+    ) public view override returns (uint256) {
         return CrowdfundingLib.calculatePlatformFee(_amount, platformFee);
     }
 
-    function getTokenForSale(uint256 _index) public view override returns (TokenSale memory) {
+    function getTokenForSale(
+        uint256 _index
+    ) public view override returns (TokenSale memory) {
         return tokenForSale[tokens[_index]];
     }
 
-    function getCost(uint256 _sold) public pure override returns (uint256 cost) {
+    function getCost(
+        uint256 _sold
+    ) public pure override returns (uint256 cost) {
         return CrowdfundingLib.calculateTokenPrice(_sold, 1 ether) / 1 ether;
     }
 
     // Main functions
-    function create(string memory _name, string memory _symbol) public payable override whenNotPaused {
-        require(bytes(_name).length > 0 && bytes(_name).length <= 32, "Invalid name length");
-        require(bytes(_symbol).length > 0 && bytes(_symbol).length <= 8, "Invalid symbol length");
+    function create(
+        string memory _name,
+        string memory _symbol
+    ) public payable override whenNotPaused {
+        require(
+            bytes(_name).length > 0 && bytes(_name).length <= 32,
+            "Invalid name length"
+        );
+        require(
+            bytes(_symbol).length > 0 && bytes(_symbol).length <= 8,
+            "Invalid symbol length"
+        );
         require(msg.value >= fee, "Insufficient fee");
 
         Token token = new Token(msg.sender, _name, _symbol, 1_000_000 ether);
@@ -105,17 +126,31 @@ contract Factory is IFactory {
         emit ContractCreated(msg.sender, address(token));
     }
 
-    function buy(address _token, uint256 _amount) external payable override nonReentrant whenNotPaused {
+    function buy(
+        address _token,
+        uint256 _amount
+    ) external payable override nonReentrant whenNotPaused {
         TokenSale storage curForSale = tokenForSale[_token];
         require(curForSale.isOpen, "Buying closed");
 
-        require(CrowdfundingLib.validateSaleParams(_amount, userPurchases[_token][msg.sender]), "Invalid purchase params");
+        require(
+            CrowdfundingLib.validateSaleParams(
+                _amount,
+                userPurchases[_token][msg.sender]
+            ),
+            "Invalid purchase params"
+        );
 
-        uint256 price = CrowdfundingLib.calculateTokenPrice(curForSale.sold, _amount);
+        uint256 price = CrowdfundingLib.calculateTokenPrice(
+            curForSale.sold,
+            _amount
+        );
         require(msg.value >= price, "Insufficient payment");
 
         if (msg.value > price) {
-            (bool success, ) = payable(msg.sender).call{value: msg.value - price}("");
+            (bool success, ) = payable(msg.sender).call{
+                value: msg.value - price
+            }("");
             require(success, "Refund failed");
         }
 
@@ -124,8 +159,10 @@ contract Factory is IFactory {
         curForSale.raised += price;
         contributions[_token][msg.sender] += msg.value;
 
-        if (curForSale.sold >= CrowdfundingLib.FUNDING_LIMIT || 
-            curForSale.raised >= CrowdfundingLib.FUNDING_TARGET) {
+        if (
+            curForSale.sold >= CrowdfundingLib.FUNDING_LIMIT ||
+            curForSale.raised >= CrowdfundingLib.FUNDING_TARGET
+        ) {
             curForSale.isOpen = false;
             emit SaleClosed(_token);
         }
@@ -134,16 +171,22 @@ contract Factory is IFactory {
         emit Buy(msg.sender, _token, _amount);
     }
 
-    function deposit(address _token) external override nonReentrant {
-        Token token = Token(_token);
+    function deposit(
+        address _token
+    ) external override onlyTokenCreator(_token) nonReentrant {
         TokenSale memory curForSale = tokenForSale[_token];
-        require(!curForSale.isOpen, "Token funding not reached");
+
+        require(curForSale.stage == SaleStage.ENDED, "Sale not ended");
+
+        Token token = Token(_token);
 
         uint256 tokenAmount = token.balanceOf(address(this));
         token.transfer(curForSale.creator, tokenAmount);
 
         uint256 ethAmount = curForSale.raised;
-        (bool success, ) = payable(curForSale.creator).call{value: ethAmount}("");
+        (bool success, ) = payable(curForSale.creator).call{value: ethAmount}(
+            ""
+        );
         require(success, "ETH transfer failed");
 
         emit FundsDeposited(_token, ethAmount);
@@ -151,11 +194,14 @@ contract Factory is IFactory {
     }
 
     function withdraw(uint256 _amount) external override onlyOwner {
+        require(_amount <= address(this).balance, "Insufficient balance");
         (bool success, ) = payable(owner).call{value: _amount}("");
         require(success, "ETH withdraw failed");
     }
 
-    function checkFundingStatus(address _token) public view override returns (bool) {
+    function checkFundingStatus(
+        address _token
+    ) public view override returns (bool) {
         TokenSale storage sale = tokenForSale[_token];
         return CrowdfundingLib.isFundingSuccessful(sale.raised);
     }
@@ -163,7 +209,10 @@ contract Factory is IFactory {
     function claimRefund(address _token) external override nonReentrant {
         TokenSale storage sale = tokenForSale[_token];
         require(block.timestamp > sale.endTime, "Sale not ended");
-        require(!CrowdfundingLib.isFundingSuccessful(sale.raised), "Funding successful");
+        require(
+            !CrowdfundingLib.isFundingSuccessful(sale.raised),
+            "Funding successful"
+        );
 
         uint256 amount = contributions[_token][msg.sender];
         require(amount > 0, "No contribution");
@@ -173,8 +222,10 @@ contract Factory is IFactory {
         require(success, "Refund failed");
     }
 
-    function setStage(address _token, SaleStage _stage) external override {
-        require(msg.sender == tokenForSale[_token].creator, "Not creator");
+    function setStage(
+        address _token,
+        SaleStage _stage
+    ) external override onlyTokenCreator(_token) {
         tokenForSale[_token].stage = _stage;
     }
 }

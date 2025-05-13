@@ -9,9 +9,6 @@ describe("Factory", function () {
 	const COST = ethers.parseUnits("1", 18)
 
 	const deployFactoryFixture = async () => {
-		// Deploy CrowdfundingLib first
-		const CrowdfundingLibFactory = await ethers.getContractFactory("CrowdfundingLib")
-
 		// Deploy the tester contract
 		const CrowdfundingLibTesterFactory = await ethers.getContractFactory("CrowdfundingLibTester")
 		const libTester = (await CrowdfundingLibTesterFactory.deploy()) as CrowdfundingLibTester
@@ -43,7 +40,7 @@ describe("Factory", function () {
 	}
 
 	const buyTokenFixture = async () => {
-		const { factory, token, creator, user1: buyer, libTester } = await deployFactoryFixture()
+		const { factory, token, creator, user1: buyer, libTester, deployer } = await deployFactoryFixture()
 
 		const transaction = await factory.connect(buyer).buy(await token.getAddress(), AMOUNT, { value: COST })
 
@@ -58,6 +55,7 @@ describe("Factory", function () {
 			buyer,
 			receipt,
 			libTester,
+			deployer,
 		}
 	}
 
@@ -155,6 +153,101 @@ describe("Factory", function () {
 			const expectedCost = libraryPrice / BigInt(1e18)
 
 			expect(cost).to.be.equal(expectedCost)
+		})
+	})
+
+	describe("Depositing", function () {
+		it("Should allow creator to deposit tokens", async () => {
+			const { factory, token, creator } = await loadFixture(buyTokenFixture)
+			
+			// End the sale first
+			await factory.connect(creator).setStage(
+				await token.getAddress(), 
+				3  // ENDED stage
+			)
+			
+			// Get initial balances
+			const initialTokenBalance = await token.balanceOf(creator.address)
+			const initialContractETH = await ethers.provider.getBalance(await factory.getAddress())
+			
+			// Deposit tokens
+			const tx = await factory.connect(creator).deposit(await token.getAddress())
+			await tx.wait()
+			
+			// Verify token transfer and ETH transfer
+			const finalTokenBalance = await token.balanceOf(creator.address)
+			const finalContractETH = await ethers.provider.getBalance(await factory.getAddress())
+			
+			expect(finalTokenBalance).to.be.gt(initialTokenBalance)
+			expect(finalContractETH).to.be.lt(initialContractETH)
+		})
+
+		it("Should only allow creator to deposit", async () => {
+			const { factory, token, creator, buyer } = await loadFixture(buyTokenFixture)
+			
+			// End the sale first (should be done by creator)
+			await factory.connect(creator).setStage(
+				await token.getAddress(), 
+				3  // ENDED stage
+			)
+			
+			await expect(
+				factory.connect(buyer).deposit(await token.getAddress())
+			).to.be.revertedWith("Not creator")
+		})
+
+		it("Should not allow deposit if sale is not ended", async () => {
+			const { factory, token, creator } = await loadFixture(deployFactoryFixture)
+			
+			// Try to deposit without ending sale
+			await expect(
+				factory.connect(creator).deposit(await token.getAddress())
+			).to.be.revertedWith("Sale not ended")
+		})
+	})
+
+	describe("Withdraw Fees", function () {
+		it("Should allow owner to withdraw fees", async () => {
+			const { factory, deployer } = await loadFixture(buyTokenFixture)
+			
+			const contractBalance = await ethers.provider.getBalance(await factory.getAddress())
+			const initialBalance = await ethers.provider.getBalance(deployer.address)
+			
+			// Withdraw all fees
+			const tx = await factory.connect(deployer).withdraw(contractBalance)
+			const receipt = await tx.wait()
+			if (!receipt) throw new Error("Transaction failed")
+			
+			// Calculate gas cost
+			const gasCost = receipt.gasUsed * receipt.gasPrice
+			
+			// Get final balances
+			const finalBalance = await ethers.provider.getBalance(deployer.address)
+			const finalContractBalance = await ethers.provider.getBalance(await factory.getAddress())
+			
+			// Verify the withdrawal
+			expect(finalContractBalance).to.equal(0)
+			expect(finalBalance).to.equal(initialBalance + contractBalance - gasCost)
+		})
+
+		it("Should only allow owner to withdraw", async () => {
+			const { factory, buyer } = await loadFixture(buyTokenFixture)
+			const amount = ethers.parseEther("1")
+			
+			await expect(
+				factory.connect(buyer).withdraw(amount)
+			).to.be.revertedWith("Not owner")
+		})
+
+		it("Should revert if withdrawal amount exceeds balance", async () => {
+			const { factory, deployer } = await loadFixture(buyTokenFixture)
+			
+			const contractBalance = await ethers.provider.getBalance(await factory.getAddress())
+			const excessAmount = contractBalance + ethers.parseEther("1")
+			
+			await expect(
+				factory.connect(deployer).withdraw(excessAmount)
+			).to.be.revertedWith("Insufficient balance")
 		})
 	})
 })
