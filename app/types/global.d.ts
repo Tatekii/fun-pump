@@ -10,14 +10,16 @@ export interface TokenSale {
   stage: number;
 }
 
-export interface TokenData {
-  address: string;
-  name: string;
-  symbol: string;
-  totalSupply: bigint;
-  decimals: number;
+export interface TokenData extends TokenSale {
+  image: string;
 }
 
 export interface ContractAddresses {
   factoryAddress: string;
+}
+
+declare global {
+  interface Window {
+    ethereum: any;
+  }
 }

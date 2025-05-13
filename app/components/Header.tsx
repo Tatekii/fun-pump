@@ -1,12 +1,20 @@
-import { ethers } from "ethers"
+import { FC } from "react"
+import { useAccount } from "wagmi"
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 
-function Header({ account, setAccount }) {
+const Header: FC = () => {
+	const { address } = useAccount()
 
-  return (
-    <header>
+	return (
+		<header>
+			<p className="brand">fun.pump</p>
 
-    </header>
-  );
+			<ConnectButton
+				label={address ? `[ ${address.slice(0, 6)}...${address.slice(38, 42)} ]` : "[ connect ]"}
+				showBalance={false}
+			/>
+		</header>
+	)
 }
 
-export default Header;
+export default Header

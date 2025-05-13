@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "esnext", "ESNext.Array", "ESNext.AsyncIterable"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -20,9 +20,15 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@app/*": ["./app/*"],
+      "@contracts/*": ["./contracts/*"],
+      "@artifacts/*": ["./artifacts/contracts/*"],
+      "@typechain/*": ["./typechain-types/*"],
     },
-    "types": ["mocha", "chai", "node"]
+    "types": ["mocha", "chai", "node", "@types/jest"],
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true
   },
   "include": [
     "next-env.d.ts",
@@ -32,7 +38,13 @@
     "app/**/*.ts",
     "app/**/*.tsx",
     "./test",
-    "./typechain-types"
+    "./typechain-types",
+    "hardhat.config.ts",
+    "wagmi.config.ts",
+    "./scripts/**/*.ts",
+    "./ignition/**/*.js",
+    "./ignition/**/*.ts",
+    "./generated.ts"
   ],
   "exclude": ["node_modules"]
 }
