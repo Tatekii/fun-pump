@@ -100,7 +100,9 @@ contract Factory is IFactory {
     // Main functions
     function create(
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        uint256 _startTime,
+        uint256 _endTime
     ) public payable override whenNotPaused {
         require(
             bytes(_name).length > 0 && bytes(_name).length <= 32,
@@ -111,6 +113,8 @@ contract Factory is IFactory {
             "Invalid symbol length"
         );
         require(msg.value >= fee, "Insufficient fee");
+        require(_startTime > block.timestamp, "Start time must be in future");
+        require(_endTime > _startTime, "End time must be after start time");
 
         Token token = new Token(msg.sender, _name, _symbol, 1_000_000 ether);
         tokens.push(address(token));
@@ -122,8 +126,8 @@ contract Factory is IFactory {
             creator: msg.sender,
             sold: 0,
             raised: 0,
-            startTime: 0,
-            endTime: 0,
+            startTime: _startTime,
+            endTime: _endTime,
             stage: SaleStage.OPENING
         });
 

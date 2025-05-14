@@ -1,6 +1,6 @@
 import { parseEther } from "viem"
 import { useWaitForTransactionReceipt } from "wagmi"
-import type { TokenSale, TokenData } from "../types/global"
+import type { TokenSale, TokenData } from "../types/token.type"
 import { useReadFactoryTokenForSale, useWriteFactoryBuy, useWriteFactoryCreate } from "../generated"
 
 export function useTokenSale(tokenAddress: string) {
@@ -41,9 +41,9 @@ export function useBuyToken() {
 export function useCreateToken() {
 	const { writeContract } = useWriteFactoryCreate()
 
-	const createToken = async (name: string, symbol: string, fee: bigint) => {
+	const createToken = async (name: string, symbol: string, startTime: number, endTime: number, fee: bigint) => {
 		return writeContract({
-			args: [name, symbol],
+			args: [name, symbol, BigInt(startTime), BigInt(endTime)],
 			value: fee,
 		})
 	}

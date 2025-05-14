@@ -42,7 +42,12 @@ interface IFactory {
     function checkFundingStatus(address _token) external view returns (bool);
 
     // Main Functions
-    function create(string memory _name, string memory _symbol) external payable;
+    function create(
+        string memory _name,
+        string memory _symbol,
+        uint256 _startTime,
+        uint256 _endTime
+    ) external payable;
     function buy(address _token, uint256 _amount) external payable;
     function deposit(address _token) external;
     function claimRefund(address _token) external;

@@ -72,28 +72,6 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-@keyframes blink {
-  0% {
-    background: yellow;
-    opacity: 0;
-  }
-
-  5% {
-    background: none;
-    opacity: 1;
-  }
-
-  95% {
-    background: none;
-    opacity: 1;
-  }
-
-  100% {
-    background: yellow;
-    opacity: 0;
-  }
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

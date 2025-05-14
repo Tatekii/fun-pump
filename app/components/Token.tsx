@@ -1,38 +1,58 @@
 import { FC } from "react"
 import { formatEther } from "viem"
-import { TokenData } from "../types/global"
+import { TokenData } from "../types/token.type"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import TiltedCard from "@/components/TiltedCard/TiltedCard"
 
 interface TokenProps {
-  toggleTrade: (token: string) => void
-  token: TokenData
+	toggleTrade: (token: string) => void
+	token: TokenData
 }
 
 const Token: FC<TokenProps> = ({ toggleTrade, token }) => {
-  return (
-    <Card 
-      onClick={() => toggleTrade(token.token)} 
-      className="hover:border first:animate-[blink_5s_ease_infinite_forwards] cursor-pointer"
-    >
-      <CardHeader>
-        <CardTitle className="text-xl text-center">{token.name}</CardTitle>
-        <CardDescription className="text-sm text-center lowercase">
-          created by {token.creator.slice(0, 6) + '...' + token.creator.slice(38, 42)}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4 text-center">
-        <img src={token.image} alt="token image" width={256} height={256} className="mx-auto" />
-        <p className="text-sm lowercase">market Cap: {formatEther(token.raised)} eth</p>
-      </CardContent>
-    </Card>
-  );
+	return (
+		// <Card onClick={() => toggleTrade(token.token)} className="hover:border cursor-pointer">
+		// 	<CardHeader>
+		// 		<CardTitle className="text-xl text-center">{token.name}</CardTitle>
+		// 		<CardDescription className="text-sm text-center lowercase">
+		// 			created by {token.creator.slice(0, 6) + "..." + token.creator.slice(38, 42)}
+		// 		</CardDescription>
+		// 	</CardHeader>
+		// 	<CardContent className="space-y-4 text-center">
+		// 		<img src={token.image} alt="token image" width={256} height={256} className="mx-auto" />
+		// 		<p className="text-sm lowercase">market Cap: {formatEther(token.raised)} eth</p>
+		// 	</CardContent>
+		// </Card>
+
+		<TiltedCard
+			altText={token.name}
+			captionText={token.name}
+			containerHeight="300px"
+			containerWidth="300px"
+			imageHeight="300px"
+			imageWidth="300px"
+			rotateAmplitude={12}
+			scaleOnHover={1.2}
+			showMobileWarning={false}
+			showTooltip={true}
+			displayOverlayContent={true}
+			imageSrc={token.image}
+			overlayContent={
+				<div className="bg-black/50 backdrop-blur-sm p-3 rounded-lg w-full h-full flex flex-col justify-center cursor-pointer">
+					<p>{token.name}</p>
+					<p className="text-sm text-center lowercase">
+						created by {token.creator.slice(0, 6) + "..." + token.creator.slice(38, 42)}
+					</p>
+
+					<div className="space-y-4 text-center">
+						<p className="text-sm lowercase">market Cap: {formatEther(token.raised)} eth</p>
+					</div>
+				</div>
+			}
+			onClick={() => toggleTrade(token.token)}
+		/>
+	)
 }
 
-export default Token;
+export default Token

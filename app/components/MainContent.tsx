@@ -7,10 +7,21 @@ import { Button } from "@/components/ui/button"
 import List from "./List"
 import Token from "./Token"
 import Trade from "./Trade"
+import { useInfiniteTokens } from "../hooks/useInfiniteTokens"
 
 export default function MainContent() {
 	const { address: account } = useAccount()
-	const { fee, tokens } = useTokens()
+	const { fee } = useTokens()
+	const {
+		tokens, // All fetched tokens combined
+		fetchNextPage, // Function to load more tokens
+		hasNextPage, // Boolean indicating if more tokens exist
+		isFetchingNextPage, // Loading state for next page
+		isError, // Error state
+		error, // Error object if any
+		isLoading, // Initial loading state
+		isSuccess, // Success state
+	} = useInfiniteTokens()
 	const [showCreate, setShowCreate] = useState(false)
 	const [showTrade, setShowTrade] = useState(false)
 	const [selectedToken, setSelectedToken] = useState<string | null>(null)
@@ -31,8 +42,9 @@ export default function MainContent() {
 					onClick={account ? toggleCreate : undefined}
 					variant="ghost"
 					className="text-4xl hover:scale-110 transition-transform"
+					disabled={!account}
 				>
-					{!account ? "[ please connect ]" : "[ start a new token ]"}
+					{"[ start a new token ]"}
 				</Button>
 			</div>
 
@@ -40,14 +52,13 @@ export default function MainContent() {
 				<h1 className=" font-extrabold p-4">Token List</h1>
 
 				<div className="grid grid-cols-[repeat(auto-fill,minmax(400px,0fr))] gap-4 place-content-center text-center">
-					{!account ? (
-						<p className="col-span-full  text-2xl">please connect wallet</p>
-					) : tokens.length === 0 ? (
-						<p className="col-span-full  text-2xl">No tokens listed</p>
-					) : (
-						tokens.map((token, index) => <Token toggleTrade={toggleTrade} token={token} key={index} />)
-					)}
+					{tokens.map((token) => (
+						<Token toggleTrade={toggleTrade} token={token} key={token.token} />
+					))}
 				</div>
+				<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+					{isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "Nothing more to load"}
+				</Button>
 			</div>
 
 			{showCreate && fee && <List toggleCreate={toggleCreate} fee={fee} />}

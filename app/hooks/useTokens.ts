@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { TokenData } from "../types/global"
+import { TokenData } from "../types/token.type"
 import { factoryAddress, factoryAbi } from "../generated"
 import { readContract } from "wagmi/actions"
 import { useReadFactoryFee, useReadFactoryTotalTokens } from "../generated"
@@ -10,8 +10,6 @@ export function useTokens() {
 	const { data: fee = BigInt(0) } = useReadFactoryFee()
 	const { data: totalTokens = BigInt(0) } = useReadFactoryTotalTokens()
 
-	const maxTokens = Math.min(Number(totalTokens), 6)
-
 	// Fetch token addresses and their details
 	useEffect(() => {
 		async function loadTokens() {
@@ -20,23 +18,23 @@ export function useTokens() {
 			const tokenData: TokenData[] = []
 
 			// Get token addresses
-			for (let i = 0; i < maxTokens; i++) {
+			for (let i = 0; i < Number(totalTokens); i++) {
 				try {
 					// First get the token address at index i
-					const tokenAddress = (await readContract(config, {
+					const tokenAddress = await readContract(config, {
 						address: factoryAddress[31337], // Default to Hardhat network
 						abi: factoryAbi,
 						functionName: "tokens",
 						args: [BigInt(i)],
-					}))
+					})
 
 					// Then get details for that token
-					const tokenSale = (await readContract(config, {
+					const tokenSale = await readContract(config, {
 						address: factoryAddress[31337],
 						abi: factoryAbi,
 						functionName: "tokenForSale",
 						args: [tokenAddress],
-					}))
+					})
 
 					if (tokenSale) {
 						tokenData.push({
@@ -48,7 +46,7 @@ export function useTokens() {
 							startTime: tokenSale[5],
 							endTime: tokenSale[6],
 							saleStage: tokenSale[7],
-							image:''
+							image: "",
 							// image: images[i % images.length],
 						})
 					}
@@ -61,7 +59,7 @@ export function useTokens() {
 		}
 
 		loadTokens()
-	}, [totalTokens, maxTokens])
+	}, [totalTokens])
 
 	return {
 		fee,

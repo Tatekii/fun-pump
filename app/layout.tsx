@@ -1,10 +1,10 @@
-import { Nabla } from "next/font/google"
+import { Kode_Mono } from "next/font/google"
 import "./globals.css"
 import { ReactNode } from "react"
 import '@rainbow-me/rainbowkit/styles.css'
 import { Providers } from "./providers"
 
-const nabla = Nabla({ subsets: ["latin"] })
+const font = Kode_Mono({ subsets: ["latin"] })
 
 export const metadata = {
 	title: "fun.pump",
@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en">
-			<body className={nabla.className}>
+			<body className={font.className}>
 				<Providers>
 					{children}
 				</Providers>

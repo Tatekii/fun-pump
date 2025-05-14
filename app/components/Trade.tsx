@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { TokenData } from "../types/global"
+import { TokenData } from "../types/token.type"
 import { useTokenSale, useBuyToken } from "../hooks/useContract"
 import { useReadContract } from "wagmi"
 import { formatEther } from "viem"

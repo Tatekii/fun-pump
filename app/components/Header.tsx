@@ -7,7 +7,7 @@ const Header: FC = () => {
 	const { address } = useAccount()
 
 	return (
-		<header className="col-[2/12] flex justify-between items-center py-8">
+		<header className="col-[2/12] flex justify-between items-center p-6">
 			<div className="text-4xl -rotate-5 flex gap-2">
 				<p>fun.pump</p>
 				<ModeToggle />
