@@ -2,7 +2,7 @@ import { Nabla } from "next/font/google"
 import "./globals.css"
 import { ReactNode } from "react"
 import '@rainbow-me/rainbowkit/styles.css'
-import { Providers } from "./components/Providers"
+import { Providers } from "./providers"
 
 const nabla = Nabla({ subsets: ["latin"] })
 

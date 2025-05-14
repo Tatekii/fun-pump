@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { TokenData } from "../types/global"
 import { factoryAddress, factoryAbi } from "../generated"
 import { readContract } from "wagmi/actions"
-import images from "../images.json"
 import { useReadFactoryFee, useReadFactoryTotalTokens } from "../generated"
 import { config } from "../config/wagmi"
 
@@ -49,7 +48,8 @@ export function useTokens() {
 							startTime: tokenSale[5],
 							endTime: tokenSale[6],
 							saleStage: tokenSale[7],
-							image: images[i % images.length],
+							image:''
+							// image: images[i % images.length],
 						})
 					}
 				} catch (error) {

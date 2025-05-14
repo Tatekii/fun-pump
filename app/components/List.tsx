@@ -1,7 +1,15 @@
-import { FC, useState } from "react"
+import { FC } from "react"
 import { formatEther } from "viem"
 import { useCreateToken } from "../hooks/useContract"
-import { useWaitForTransactionReceipt } from "wagmi"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface ListProps {
 	toggleCreate: () => void
@@ -22,24 +30,52 @@ const List: FC<ListProps> = ({ toggleCreate, fee }) => {
 	}
 
 	return (
-		<div className="list">
-			<h2>list new token</h2>
+		<Dialog open={true} onOpenChange={toggleCreate}>
+			<DialogContent className="backdrop-blur-sm">
+				<DialogHeader>
+					<DialogTitle className="text-4xl text-center">list new token</DialogTitle>
+					<DialogDescription className="text-lg text-center">
+						fee: {formatEther(fee)} ETH
+					</DialogDescription>
+				</DialogHeader>
 
-			<div className="list__description">
-				<p>fee: {formatEther(fee)} ETH</p>
-			</div>
-
-			<form action={listHandler}>
-				<input type="text" name="name" placeholder="name" required />
-				<input type="text" name="ticker" placeholder="ticker" required />
-				{/* TODO <input type="submit" value={isPending ? "[ listing... ]" : "[ list ]"} disabled={isPending} /> */}
-				<input type="submit" value={"[ list ]"} />
-			</form>
-
-			<button onClick={toggleCreate} className="btn--fancy">
-				[ cancel ]
-			</button>
-		</div>
+				<form action={listHandler} className="space-y-6">
+					<div className="space-y-4">
+						<Input
+							type="text"
+							name="name"
+							placeholder="name"
+							required
+							className="w-full p-6"
+						/>
+						<Input
+							type="text"
+							name="ticker"
+							placeholder="ticker"
+							required
+							className="w-full p-6"
+						/>
+					</div>
+					<div className="flex flex-col space-y-4">
+						<Button 
+							type="submit"
+							variant="ghost" 
+							className="text-2xl hover:scale-110 transition-transform"
+						>
+							[ list ]
+						</Button>
+						<Button 
+							type="button"
+							variant="ghost"
+							onClick={toggleCreate}
+							className="text-2xl hover:scale-110 transition-transform"
+						>
+							[ cancel ]
+						</Button>
+					</div>
+				</form>
+			</DialogContent>
+		</Dialog>
 	)
 }
 

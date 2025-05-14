@@ -8,6 +8,22 @@ import {
 	useReadCrowdfundingLibFundingTarget,
 	useReadFactoryGetCost,
 } from "../generated"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 interface ITradeProps {
 	toggleTrade: () => void
@@ -52,31 +68,57 @@ const Trade: FC<ITradeProps> = ({ toggleTrade, token }) => {
 	console.log({ token, limit, target })
 
 	return (
-		<div className="trade">
-			<h2>trade</h2>
+		<Dialog open={true} onOpenChange={toggleTrade}>
+			<DialogContent className="backdrop-blur-sm">
+				<DialogHeader>
+					<DialogTitle className="text-4xl text-center">trade</DialogTitle>
+				</DialogHeader>
 
-			<div className="token__details">
-				<p className="name">{token.name}</p>
-				<p>creator: {token.creator.slice(0, 6) + "..." + token.creator.slice(38, 42)}</p>
-				<img src={token.image} alt="token" width={256} height={256} />
-				<p>marketcap: {formatEther(token.raised)} ETH</p>
-				<p>base cost: {formatEther(cost)} ETH</p>
-			</div>
+				<Card>
+					<CardHeader>
+						<CardTitle className="text-xl text-center">{token.name}</CardTitle>
+						<CardDescription className="text-sm text-center">
+							creator: {token.creator.slice(0, 6) + "..." + token.creator.slice(38, 42)}
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-4 text-center">
+						<img src={token.image} alt="token" width={256} height={256} className="mx-auto" />
+						<p className="text-sm">marketcap: {formatEther(token.raised)} ETH</p>
+						<p className="text-sm">base cost: {formatEther(cost)} ETH</p>
+					</CardContent>
+				</Card>
 
-			{token.sold >= limit || token.raised >= target ? (
-				<p className="disclaimer">target reached!</p>
-			) : (
-				<form action={buyHandler}>
-					<input type="number" name="amount" min={1} max={10000} placeholder="1" />
-					{/* <input type="submit" value={isLoading ? "[ buying... ]" : "[ buy ]"} disabled={isLoading} /> */}
-					<input type="submit" value={"[ buy ]"} />
-				</form>
-			)}
+				{token.sold >= limit || token.raised >= target ? (
+					<p className="text-2xl text-center lowercase">target reached!</p>
+				) : (
+					<form action={buyHandler} className="space-y-6">
+						<Input
+							type="number"
+							name="amount"
+							min={1}
+							max={10000}
+							placeholder="1"
+							className="w-full p-6"
+						/>
+						<Button 
+							type="submit"
+							variant="ghost"
+							className="w-full text-2xl hover:scale-110 transition-transform"
+						>
+							[ buy ]
+						</Button>
+					</form>
+				)}
 
-			<button onClick={toggleTrade} className="btn--fancy">
-				[ cancel ]
-			</button>
-		</div>
+				<Button 
+					onClick={toggleTrade}
+					variant="ghost"
+					className="text-2xl hover:scale-110 transition-transform"
+				>
+					[ cancel ]
+				</Button>
+			</DialogContent>
+		</Dialog>
 	)
 }
 
