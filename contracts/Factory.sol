@@ -6,8 +6,6 @@ import {IFactory} from "./interfaces/IFactory.sol";
 import {CrowdfundingLib} from "./libraries/CrowdfundingLib.sol";
 
 contract Factory is IFactory {
-    using CrowdfundingLib for *;
-
     // State variables
     uint256 public fee;
     uint256 public platformFee = 50; // 0.5%
@@ -49,6 +47,14 @@ contract Factory is IFactory {
         _locked = true;
         _;
         _locked = false;
+    }
+
+    modifier onlyTestNetwork() {
+        require(
+            block.chainid == 31337 || block.chainid == 1337,
+            "Test functions only allowed on test networks"
+        );
+        _;
     }
 
     constructor(uint256 _fee) {
@@ -118,8 +124,7 @@ contract Factory is IFactory {
             raised: 0,
             startTime: 0,
             endTime: 0,
-            isOpen: true,
-            stage: SaleStage.SETUP
+            stage: SaleStage.OPENING
         });
 
         tokenForSale[address(token)] = _sale;
@@ -131,7 +136,7 @@ contract Factory is IFactory {
         uint256 _amount
     ) external payable override nonReentrant whenNotPaused {
         TokenSale storage curForSale = tokenForSale[_token];
-        require(curForSale.isOpen, "Buying closed");
+        require(curForSale.stage == SaleStage.OPENING, "Sale not active");
 
         require(
             CrowdfundingLib.validateSaleParams(
@@ -163,7 +168,8 @@ contract Factory is IFactory {
             curForSale.sold >= CrowdfundingLib.FUNDING_LIMIT ||
             curForSale.raised >= CrowdfundingLib.FUNDING_TARGET
         ) {
-            curForSale.isOpen = false;
+            curForSale.stage = SaleStage.ENDED;
+
             emit SaleClosed(_token);
         }
 
@@ -227,5 +233,25 @@ contract Factory is IFactory {
         SaleStage _stage
     ) external override onlyTokenCreator(_token) {
         tokenForSale[_token].stage = _stage;
+    }
+
+    // NOTE Test helper function
+    function setTestSaleData(
+        address _token,
+        uint256 _sold,
+        uint256 _raised
+    ) external onlyTestNetwork {
+        TokenSale storage sale = tokenForSale[_token];
+        sale.sold = _sold;
+        sale.raised = _raised;
+    }
+
+    // NOTE Test helper function
+    function setTestUserPurchases(
+        address _token,
+        address _user,
+        uint256 _amount
+    ) external onlyTestNetwork {
+        userPurchases[_token][_user] = _amount;
     }
 }

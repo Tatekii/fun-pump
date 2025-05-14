@@ -15,15 +15,30 @@ interface ITradeProps {
 }
 
 const Trade: FC<ITradeProps> = ({ toggleTrade, token }) => {
-	const { data: target = BigInt(0) } = useReadCrowdfundingLibFundingTarget()
+	const { data: target = BigInt(0), error: targetError, isLoading: targetLoading } =
+		useReadCrowdfundingLibFundingTarget()
 
-	const { data: limit = BigInt(0) } = useReadCrowdfundingLibFundingLimit()
+	const { data: limit = BigInt(0), error: limitError, isLoading: limitLoading } =
+		useReadCrowdfundingLibFundingLimit()
 
 	const { data: cost = BigInt(0) } = useReadFactoryGetCost({
 		args: [token.sold],
 	})
 
 	const { buyToken } = useBuyToken()
+
+	// Add debugging
+	console.log("Target:", {
+		value: target,
+		error: targetError,
+		loading: targetLoading,
+	})
+
+	console.log("Limit:", {
+		value: limit,
+		error: limitError,
+		loading: limitLoading,
+	})
 
 	async function buyHandler(formData: FormData) {
 		const amount = formData.get("amount") as string

@@ -18,8 +18,7 @@ export function useTokenSale(tokenAddress: string) {
 				raised: data[4],
 				startTime: data[5],
 				endTime: data[6],
-				isOpen: data[7],
-				stage: data[8],
+				saleStage: data[7],
 			} as TokenSale)
 		: undefined
 

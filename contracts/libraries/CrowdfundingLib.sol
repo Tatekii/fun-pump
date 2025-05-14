@@ -12,7 +12,7 @@ library CrowdfundingLib {
     function calculateTokenPrice(
         uint256 _sold,
         uint256 _amount
-    ) internal pure returns (uint256) {
+    ) public pure returns (uint256) {
         uint256 floor = 0.0001 ether;
         uint256 step = 0.0001 ether;
         uint256 increment = 10000 ether;
@@ -24,7 +24,7 @@ library CrowdfundingLib {
     function validateSaleParams(
         uint256 _amount,
         uint256 totalPurchased
-    ) internal pure returns (bool) {
+    ) public pure returns (bool) {
         if (_amount < 1 ether || _amount > 10000 ether) {
             return false;
         }
@@ -37,11 +37,11 @@ library CrowdfundingLib {
     function calculatePlatformFee(
         uint256 _amount,
         uint256 _feeRate
-    ) internal pure returns (uint256) {
+    ) public pure returns (uint256) {
         return (_amount * _feeRate) / FEE_DENOMINATOR;
     }
 
-    function isFundingSuccessful(uint256 _raised) internal pure returns (bool) {
+    function isFundingSuccessful(uint256 _raised) public pure returns (bool) {
         return _raised >= SOFT_CAP;
     }
 }

@@ -81,7 +81,7 @@ bun dev
 
 Run the test suite:
 ```bash
-bun hardhat test
+bunx hardhat test --tsconfig ./tsconfig.hardhat.json
 ```
 
 ## Contract Deployment Addresses

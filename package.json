@@ -11,7 +11,7 @@
 		"test": "hardhat test",
 		"deploy": "hardhat ignition deploy ignition/modules/deploy.js",
 		"deploy:local": "hardhat ignition deploy ignition/modules/deploy.js --network localhost",
-		"deploy:reset": "hardhat ignition deploy ignition/modules/deploy.js --reset",
+		"deploy:local:reset": "hardhat ignition deploy ignition/modules/deploy.js --reset --network localhost",
 		"node": "hardhat node",
 		"generate": "wagmi generate"
 	},
@@ -28,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+		"@nomicfoundation/hardhat-ignition-viem": "^0.15.11",
 		"@nomicfoundation/hardhat-toolbox": "^5.0.0",
 		"@typechain/ethers-v6": "^0.5.1",
 		"@typechain/hardhat": "^9.1.0",
@@ -38,6 +39,7 @@
 		"@types/react": "^19.1.4",
 		"@types/react-dom": "^19.1.4",
 		"@wagmi/cli": "^2.3.1",
+		"dotenv": "^16.5.0",
 		"hardhat": "^2.22.16",
 		"typescript": "^5.8.3"
 	}

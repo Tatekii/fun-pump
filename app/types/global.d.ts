@@ -6,8 +6,7 @@ export interface TokenSale {
   raised: bigint;
   startTime: bigint;
   endTime: bigint;
-  isOpen: boolean;
-  stage: number;
+  saleStage: number;
 }
 
 export interface TokenData extends TokenSale {

@@ -48,8 +48,7 @@ export function useTokens() {
 							raised: tokenSale[4],
 							startTime: tokenSale[5],
 							endTime: tokenSale[6],
-							isOpen: tokenSale[7],
-							stage: tokenSale[8],
+							saleStage: tokenSale[7],
 							image: images[i % images.length],
 						})
 					}

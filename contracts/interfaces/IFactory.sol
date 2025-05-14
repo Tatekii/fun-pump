@@ -11,22 +11,13 @@ interface IFactory {
         uint256 raised;
         uint256 startTime;
         uint256 endTime;
-        bool isOpen;
-        SaleStage stage;
+        SaleStage stage;  // Removed isOpen, simplified stages
     }
-
-    // struct VestingSchedule {
-    //     uint256 cliff;
-    //     uint256 duration;
-    //     uint256 released;
-    // }
 
     // Enums
     enum SaleStage {
-        SETUP,
-        WHITELIST,
-        PUBLIC,
-        ENDED
+        OPENING,  // Public sale is active - Open
+        ENDED    // Sale has ended - Closed
     }
 
     // Events
@@ -56,6 +47,8 @@ interface IFactory {
     function deposit(address _token) external;
     function claimRefund(address _token) external;
     function setStage(address _token, SaleStage _stage) external;
+    function setTestSaleData(address _token, uint256 _sold, uint256 _raised) external;
+    function setTestUserPurchases(address _token, address _user, uint256 _amount) external;
 
     // State Variables (getters)
     function fee() external view returns (uint256);

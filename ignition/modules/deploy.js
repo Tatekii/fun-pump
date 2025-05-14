@@ -9,15 +9,13 @@ const FEE = parseEther("0.01")
 module.exports = buildModule("FactoryModule", (m) => {
 	const fee = m.getParameter("fee", FEE)
 
-	const factory = m.contract(
-		"Factory",
-		[fee],
-		// {
-		// 	libraries: {
-		// 		CrowdfundingLib: crowdfundingLib,
-		// 	},
-		// }
-	)
+	const crowdfundingLib = m.contract("CrowdfundingLib")
+
+	const factory = m.contract("Factory", [fee], {
+		libraries: {
+			CrowdfundingLib: crowdfundingLib,
+		},
+	})
 
 	return { factory }
 })

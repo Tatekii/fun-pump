@@ -9,4 +9,12 @@ contract CrowdfundingLibTester {
     function testCalculateTokenPrice(uint256 _sold, uint256 _amount) public pure returns (uint256) {
         return CrowdfundingLib.calculateTokenPrice(_sold, _amount);
     }
+
+    function getFundingLimit() public pure returns (uint256) {
+        return CrowdfundingLib.FUNDING_LIMIT;
+    }
+
+    function getFundingTarget() public pure returns (uint256) {
+        return CrowdfundingLib.FUNDING_TARGET;
+    }
 }
