@@ -7,8 +7,7 @@ export interface TokenSale {
 	startTime: bigint
 	endTime: bigint
 	saleStage: number
+	signedUrl: string
 }
 
-export interface TokenData extends TokenSale {
-	image: string
-}
+export interface TokenData extends TokenSale {}

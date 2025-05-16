@@ -6,13 +6,16 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
+
+const MAX_FILE_SIZE = 15 * 1024 // 15kb
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
 
 const formSchema = z
 	.object({
@@ -36,6 +39,13 @@ const formSchema = z
 		endTime: z.date({
 			required_error: "Please select an end date",
 		}),
+		image: z
+			.custom<File>()
+			.refine((file) => file?.size <= MAX_FILE_SIZE, "Max file size is 15KB")
+			.refine(
+				(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+				"Only .jpg, .jpeg, .png and .gif formats are supported"
+			),
 	})
 	.refine(
 		(data) => {
@@ -57,6 +67,7 @@ interface ListProps {
 
 const List: FC<ListProps> = ({ toggleCreate, fee }) => {
 	const { createToken } = useCreateToken()
+	const [preview, setPreview] = useState<string>("")
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -65,6 +76,7 @@ const List: FC<ListProps> = ({ toggleCreate, fee }) => {
 			symbol: "",
 			startTime: new Date(),
 			endTime: new Date(),
+			image: undefined,
 		},
 	})
 
@@ -76,11 +88,27 @@ const List: FC<ListProps> = ({ toggleCreate, fee }) => {
 			const startTimestamp = Math.floor(new Date(values.startTime).getTime() / 1000)
 			const endTimestamp = Math.floor(new Date(values.endTime).getTime() / 1000)
 
-			await createToken(values.name, values.symbol, startTimestamp, endTimestamp, fee)
+			const data = new FormData()
+			data.set("file", values.image)
+			const uploadRequest = await fetch("/api/files", {
+				method: "POST",
+				body: data,
+			})
+			const signedUrl = await uploadRequest.json()
+
+			// Now pass the IPFS hash to your contract
+			await createToken(
+				values.name,
+				values.symbol,
+				startTimestamp,
+				endTimestamp,
+				signedUrl, // Store only the IPFS hash on-chain
+				fee
+			)
+
 			toggleCreate()
 		} catch (error) {
 			console.error("Failed to create token:", error)
-			// You might want to show an error toast here
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -121,6 +149,62 @@ const List: FC<ListProps> = ({ toggleCreate, fee }) => {
 									</FormItem>
 								)}
 							/>
+							<FormField
+								control={form.control}
+								name="image"
+								render={({ field: { onChange, value, ...field } }) => (
+									<FormItem>
+										<FormLabel>Token Image</FormLabel>
+										<FormControl>
+											<div className="grid gap-4">
+												<div className="relative">
+													<Input
+														type="file"
+														accept="image/jpeg,image/png,image/gif"
+														className="hidden"
+														onChange={(e) => {
+															const file = e.target.files?.[0]
+															if (file) {
+																onChange(file)
+																const reader = new FileReader()
+																reader.onload = (e) => {
+																	setPreview(e.target?.result as string)
+																}
+																reader.readAsDataURL(file)
+															}
+														}}
+														{...field}
+													/>
+													<Button
+														type="button"
+														variant="outline"
+														className="w-full"
+														onClick={() => {
+															const input = document.querySelector(
+																'input[type="file"]'
+															) as HTMLInputElement
+															input?.click()
+														}}
+													>
+														Choose Image
+													</Button>
+												</div>
+												{preview && (
+													<div className="relative aspect-square w-20 overflow-hidden rounded-lg">
+														{/* eslint-disable-next-line @next/next/no-img-element */}
+														<img src={preview} alt="Preview" className="object-cover" />
+													</div>
+												)}
+											</div>
+										</FormControl>
+										<FormDescription>
+											Max file size: 15KB. Supported formats: JPG, PNG, GIF
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
 							<div className="flex gap-4">
 								<FormField
 									control={form.control}

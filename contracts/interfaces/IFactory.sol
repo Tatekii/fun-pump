@@ -12,6 +12,7 @@ interface IFactory {
         uint256 startTime;
         uint256 endTime;
         SaleStage stage;  // Removed isOpen, simplified stages
+        string signedUrl;
     }
 
     // Enums
@@ -46,7 +47,8 @@ interface IFactory {
         string memory _name,
         string memory _symbol,
         uint256 _startTime,
-        uint256 _endTime
+        uint256 _endTime,
+        string memory signedUrl
     ) external payable;
     function buy(address _token, uint256 _amount) external payable;
     function deposit(address _token) external;

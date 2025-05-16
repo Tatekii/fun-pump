@@ -41,9 +41,16 @@ export function useBuyToken() {
 export function useCreateToken() {
 	const { writeContract } = useWriteFactoryCreate()
 
-	const createToken = async (name: string, symbol: string, startTime: number, endTime: number, fee: bigint) => {
+	const createToken = async (
+		name: string,
+		symbol: string,
+		startTime: number,
+		endTime: number,
+		signedUrl: string,
+		fee: bigint
+	) => {
 		return writeContract({
-			args: [name, symbol, BigInt(startTime), BigInt(endTime)],
+			args: [name, symbol, BigInt(startTime), BigInt(endTime), signedUrl],
 			value: fee,
 		})
 	}

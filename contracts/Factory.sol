@@ -102,7 +102,8 @@ contract Factory is IFactory {
         string memory _name,
         string memory _symbol,
         uint256 _startTime,
-        uint256 _endTime
+        uint256 _endTime,
+        string memory _imageHash
     ) public payable override whenNotPaused {
         require(
             bytes(_name).length > 0 && bytes(_name).length <= 32,
@@ -128,7 +129,8 @@ contract Factory is IFactory {
             raised: 0,
             startTime: _startTime,
             endTime: _endTime,
-            stage: SaleStage.OPENING
+            stage: SaleStage.OPENING,
+            signedUrl: _imageHash
         });
 
         tokenForSale[address(token)] = _sale;

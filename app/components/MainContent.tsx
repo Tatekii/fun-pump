@@ -2,16 +2,16 @@
 
 import { useState } from "react"
 import { useAccount } from "wagmi"
-import { useTokens } from "../hooks/useTokens"
 import { Button } from "@/components/ui/button"
 import List from "./List"
 import Token from "./Token"
 import Trade from "./Trade"
 import { useInfiniteTokens } from "../hooks/useInfiniteTokens"
+import { useReadFactoryFee } from "../generated"
 
 export default function MainContent() {
 	const { address: account } = useAccount()
-	const { fee } = useTokens()
+	const { data: fee = BigInt(0) } = useReadFactoryFee()
 	const {
 		tokens, // All fetched tokens combined
 		fetchNextPage, // Function to load more tokens
@@ -51,9 +51,12 @@ export default function MainContent() {
 			<div className="col-span-full">
 				<h1 className=" font-extrabold p-4">Token List</h1>
 
-				<div className="grid grid-cols-[repeat(auto-fill,minmax(400px,0fr))] gap-4 place-content-center text-center">
+				<div className="grid grid-cols-[repeat(auto-fill,minmax(300px,0fr))] gap-4 place-content-center text-center m-4">
 					{tokens.map((token) => (
-						<Token toggleTrade={toggleTrade} token={token} key={token.token} />
+						<>
+							<Token toggleTrade={toggleTrade} token={token} key={token.token} />
+							<Token toggleTrade={toggleTrade} token={token} key={token.token} />
+						</>
 					))}
 				</div>
 				<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>

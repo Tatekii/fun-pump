@@ -57,7 +57,7 @@ async function fetchTokenPage(pageParam: number) {
 					startTime: tokenSale[5],
 					endTime: tokenSale[6],
 					saleStage: tokenSale[7],
-					image: "",
+					signedUrl: tokenSale[8],
 				})
 			}
 		}

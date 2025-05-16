@@ -1,8 +1,6 @@
 import { FC } from "react"
 import { formatEther } from "viem"
 import { TokenData } from "../types/token.type"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import TiltedCard from "@/components/TiltedCard/TiltedCard"
 
 interface TokenProps {
@@ -37,7 +35,7 @@ const Token: FC<TokenProps> = ({ toggleTrade, token }) => {
 			showMobileWarning={false}
 			showTooltip={true}
 			displayOverlayContent={true}
-			imageSrc={token.image}
+			imageSrc={`${token.signedUrl}`}
 			overlayContent={
 				<div className="bg-black/50 backdrop-blur-sm p-3 rounded-lg w-full h-full flex flex-col justify-center cursor-pointer">
 					<p>{token.name}</p>

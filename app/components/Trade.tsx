@@ -43,19 +43,6 @@ const Trade: FC<ITradeProps> = ({ toggleTrade, token }) => {
 
 	const { buyToken } = useBuyToken()
 
-	// Add debugging
-	console.log("Target:", {
-		value: target,
-		error: targetError,
-		loading: targetLoading,
-	})
-
-	console.log("Limit:", {
-		value: limit,
-		error: limitError,
-		loading: limitLoading,
-	})
-
 	async function buyHandler(formData: FormData) {
 		const amount = formData.get("amount") as string
 		if (!cost || !amount) return
@@ -82,7 +69,7 @@ const Trade: FC<ITradeProps> = ({ toggleTrade, token }) => {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4 text-center">
-						<img src={token.image} alt="token" width={256} height={256} className="mx-auto" />
+						<img src={token.signedUrl} alt="token" width={256} height={256} className="mx-auto" />
 						<p className="text-sm">marketcap: {formatEther(token.raised)} ETH</p>
 						<p className="text-sm">base cost: {formatEther(cost)} ETH</p>
 					</CardContent>

@@ -11,6 +11,12 @@ A decentralized crowdfunding platform using smart contracts and modern web techn
 - [Bun](https://bun.sh/) (Runtime & Package Manager)
 - [Next.js](https://nextjs.org/) (Frontend Framework)
 - [Wagmi](https://wagmi.sh/) (React Hooks for Ethereum)
+- [Pinata](https://www.pinata.cloud/) (IPFS Storage)
+- [TanStack Query](https://tanstack.com/query/latest) (Data Fetching & Caching)
+- [Shadcn/ui](https://ui.shadcn.com/) (UI Components)
+- [Tailwind CSS](https://tailwindcss.com/) (Styling)
+- [React Hook Form](https://react-hook-form.com/) (Form Handling)
+- [Zod](https://zod.dev/) (Schema Validation)
 
 ## Requirements For Initial Setup
 
@@ -76,6 +82,20 @@ bun wagmi generate
 ```bash
 bun dev
 ```
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+# Pinata IPFS
+PINATA_API_KEY=your_pinata_api_key
+NEXT_PUBLIC_GATEWAY_URL=your_pinata_secret_key
+
+# Add other environment variables as needed
+```
+
+Note: Never commit your `.env.local` file to version control.
 
 ## Testing
 
