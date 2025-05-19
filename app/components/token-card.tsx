@@ -4,11 +4,11 @@ import { TokenData } from "../types/token.type"
 import TiltedCard from "@/components/TiltedCard/TiltedCard"
 
 interface TokenProps {
-	toggleTrade: (token: string) => void
+	toggleTrade: (token: TokenData) => void
 	token: TokenData
 }
 
-const Token: FC<TokenProps> = ({ toggleTrade, token }) => {
+const TokenCard: FC<TokenProps> = ({ toggleTrade, token, ...rest }) => {
 	return (
 		// <Card onClick={() => toggleTrade(token.token)} className="hover:border cursor-pointer">
 		// 	<CardHeader>
@@ -48,9 +48,10 @@ const Token: FC<TokenProps> = ({ toggleTrade, token }) => {
 					</div>
 				</div>
 			}
-			onClick={() => toggleTrade(token.token)}
+			onClick={() => toggleTrade(token)}
+			{...rest}
 		/>
 	)
 }
 
-export default Token
+export default TokenCard

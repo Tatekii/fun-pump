@@ -7,25 +7,18 @@ import { config } from "../config/wagmi"
 
 type PageParam = number
 type TokenPage = {
-    tokens: TokenData[]
-    nextPage: number | undefined
-    totalTokens: number
+	tokens: TokenData[]
+	nextPage: number | undefined
+	totalTokens: number
 }
 
 const TOKENS_PER_PAGE = 12
 
-async function fetchTokenPage(pageParam: number) {
+async function fetchTokenPage(totalTokens: bigint, pageParam: number) {
 	const start = pageParam * TOKENS_PER_PAGE
 	const tokenData: TokenData[] = []
 
 	try {
-		// Get total tokens first to know our bounds
-		const totalTokens = await readContract(config, {
-			address: factoryAddress[31337],
-			abi: factoryAbi,
-			functionName: "totalTokens",
-		})
-
 		// Calculate end index, making sure we don't exceed total tokens
 		const end = Math.min(start + TOKENS_PER_PAGE, Number(totalTokens))
 
@@ -86,12 +79,15 @@ export function useInfiniteTokens() {
 		isLoading,
 		isSuccess,
 	} = useInfiniteQuery({
-		queryKey: ["tokens"],
+		queryKey: ["tokens", totalTokens.toString()], // Add totalTokens to query key
 		initialPageParam: 0,
-		queryFn: async ({ pageParam }) => fetchTokenPage(pageParam as number),
+		queryFn: async ({ pageParam }) => fetchTokenPage(totalTokens, pageParam),
 		getNextPageParam: (lastPage: TokenPage) => lastPage.nextPage,
 		staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
 		refetchInterval: 1000 * 30, // Refetch every 30 seconds
+		refetchOnMount: true,
+		// Automatically refetch when totalTokens changes
+		enabled: !totalTokens.toString().startsWith("-"), // Only fetch when totalTokens is valid
 	})
 
 	// Combine all pages into a single array

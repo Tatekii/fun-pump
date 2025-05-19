@@ -3,13 +3,15 @@
 import { useState } from "react"
 import { useAccount } from "wagmi"
 import { Button } from "@/components/ui/button"
-import List from "./List"
-import Token from "./Token"
-import Trade from "./Trade"
+import CreateTokenModal from "../components/create-token-modal"
+import TokenCard from "../components/token-card"
+import TradeModal from "../components/trade-modal"
 import { useInfiniteTokens } from "../hooks/useInfiniteTokens"
 import { useReadFactoryFee } from "../generated"
+import { toast } from "sonner"
+import { TokenData } from "../types/token.type"
 
-export default function MainContent() {
+export default function MainView() {
 	const { address: account } = useAccount()
 	const { data: fee = BigInt(0) } = useReadFactoryFee()
 	const {
@@ -24,13 +26,17 @@ export default function MainContent() {
 	} = useInfiniteTokens()
 	const [showCreate, setShowCreate] = useState(false)
 	const [showTrade, setShowTrade] = useState(false)
-	const [selectedToken, setSelectedToken] = useState<string | null>(null)
+	const [selectedToken, setSelectedToken] = useState<TokenData | null>(null)
+
+	function handleClickCreate() {
+		account && toggleCreate()
+	}
 
 	function toggleCreate() {
 		setShowCreate(!showCreate)
 	}
 
-	function toggleTrade(token: string) {
+	function toggleTrade(token: TokenData | null) {
 		setSelectedToken(token)
 		setShowTrade(!showTrade)
 	}
@@ -39,7 +45,7 @@ export default function MainContent() {
 		<main className="col-[2/12] grid grid-cols-12 text-center">
 			<div className="col-span-full place-content-center min-h-[30svh]">
 				<Button
-					onClick={account ? toggleCreate : undefined}
+					onClick={handleClickCreate}
 					variant="ghost"
 					className="text-4xl hover:scale-110 transition-transform"
 					disabled={!account}
@@ -52,11 +58,8 @@ export default function MainContent() {
 				<h1 className=" font-extrabold p-4">Token List</h1>
 
 				<div className="grid grid-cols-[repeat(auto-fill,minmax(300px,0fr))] gap-4 place-content-center text-center m-4">
-					{tokens.map((token) => (
-						<>
-							<Token toggleTrade={toggleTrade} token={token} key={token.token} />
-							<Token toggleTrade={toggleTrade} token={token} key={token.token} />
-						</>
+					{tokens.map((_token) => (
+						<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
 					))}
 				</div>
 				<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
@@ -64,14 +67,11 @@ export default function MainContent() {
 				</Button>
 			</div>
 
-			{showCreate && fee && <List toggleCreate={toggleCreate} fee={fee} />}
+			<CreateTokenModal toggleCreate={toggleCreate} fee={fee} showCreate={showCreate} />
 
-			{showTrade && selectedToken && (
-				<Trade
-					toggleTrade={() => toggleTrade(selectedToken)}
-					token={tokens.find((t) => t.token === selectedToken)!}
-				/>
-			)}
+			{selectedToken ? (
+				<TradeModal open={showTrade} toggleTrade={() => toggleTrade(null)} token={selectedToken} />
+			) : null}
 		</main>
 	)
 }

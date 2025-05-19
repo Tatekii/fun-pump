@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { useAccount } from "wagmi"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { ModeToggle } from "./ModeToggle"
+import { ModeToggle } from "./mode-toggle"
 
 const Header: FC = () => {
 	const { address } = useAccount()

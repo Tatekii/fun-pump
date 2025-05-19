@@ -2,11 +2,11 @@
 
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
-import Header from "./components/Header"
+import Header from "./components/header"
 import LoadingUI from "./components/LoadingUI"
 
 // Use dynamic import with ssr disabled for MainContent
-const MainContent = dynamic(() => import("./components/MainContent"), {
+const MainContent = dynamic(() => import("./views/main-view"), {
 	ssr: false,
 	loading: () => <LoadingUI />,
 })
