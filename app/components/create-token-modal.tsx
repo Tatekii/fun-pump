@@ -7,13 +7,14 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { ResponsiveModal } from "./responsive-modal"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const MAX_FILE_SIZE = 15 * 1024 // 15kb
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
@@ -67,19 +68,39 @@ interface CreateTokenModalProps {
 	showCreate: boolean
 }
 
+const formDefaultValue = {
+	name: "",
+	symbol: "",
+	startTime: (() => {
+		const nextHour = new Date();
+		nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0); // Next hour with 0 minutes and seconds
+		return nextHour;
+	})(),
+	endTime: (() => {
+		const nextDay = new Date();
+		nextDay.setDate(nextDay.getDate() + 1);
+		nextDay.setHours(nextDay.getHours() + 1, 0, 0, 0); // Same time next day
+		return nextDay;
+	})(),
+	image: undefined,
+}
+
 const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCreate }) => {
-	const { createToken } = useCreateToken()
+	const {
+		createToken,
+		isPending, // Wallet interaction
+		isConfirming, // Transaction confirming
+		isSuccess, // Transaction confirmed
+		isError, // Transaction failed
+		error, // Error details if any
+		reset,
+	} = useCreateToken()
+
 	const [preview, setPreview] = useState<string>("")
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: {
-			name: "",
-			symbol: "",
-			startTime: new Date(),
-			endTime: new Date(),
-			image: undefined,
-		},
+		defaultValues: formDefaultValue,
 	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
@@ -90,6 +111,7 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			const startTimestamp = Math.floor(new Date(values.startTime).getTime() / 1000)
 			const endTimestamp = Math.floor(new Date(values.endTime).getTime() / 1000)
 
+			// Upload image first
 			const data = new FormData()
 			data.set("file", values.image)
 			const uploadRequest = await fetch("/api/files", {
@@ -98,28 +120,26 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			})
 			const signedUrl = await uploadRequest.json()
 
-			// Now pass the IPFS hash to your contract
-			await createToken(
-				values.name,
-				values.symbol,
-				startTimestamp,
-				endTimestamp,
-				signedUrl, // Store only the IPFS hash on-chain
-				fee
-			)
-
-			// TODO 监听创建成功或失败
-		} catch (error) {
-			console.error("Failed to create token:", error)
+			await createToken(values.name, values.symbol, startTimestamp, endTimestamp, signedUrl, fee)
 		} finally {
 			setIsSubmitting(false)
 		}
 	}
 
+	// Update button text based on transaction status
+	const buttonText = isPending ? "Confirming..." : isConfirming ? "Creating..." : "Create Token"
+
+	const handleClose = () => {
+		reset()
+		form.reset(formDefaultValue)
+		setPreview("")
+		toggleCreate()
+	}
+
 	return (
 		<ResponsiveModal
 			open={showCreate}
-			onOpenChange={toggleCreate}
+			onOpenChange={handleClose}
 			title={"list new token"}
 			description={`fee: ${formatEther(fee)} ETH`}
 		>
@@ -240,6 +260,32 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 													disabled={(date) => date < new Date()}
 													initialFocus
 												/>
+												{field.value && (
+													<div className="flex items-center gap-2 justify-center">
+														<Label htmlFor="hours">Time:</Label>
+														<Select
+															onValueChange={(value) => {
+																const newDate = new Date(field.value)
+																newDate.setHours(parseInt(value), 0, 0)
+																field.onChange(newDate)
+															}}
+															defaultValue={
+																field.value ? field.value.getHours().toString() : "12"
+															}
+														>
+															<SelectTrigger id="hours">
+																<SelectValue placeholder="Select hour" />
+															</SelectTrigger>
+															<SelectContent>
+																{Array.from({ length: 24 }, (_, i) => (
+																	<SelectItem key={i} value={i.toString()}>
+																		{i.toString().padStart(2, "0")}:00
+																	</SelectItem>
+																))}
+															</SelectContent>
+														</Select>
+													</div>
+												)}
 											</PopoverContent>
 										</Popover>
 										<FormMessage />
@@ -280,6 +326,32 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 													disabled={(date) => date < field.value}
 													initialFocus
 												/>
+												{field.value && (
+													<div className="flex items-center gap-2 justify-center">
+														<Label htmlFor="hours">Time:</Label>
+														<Select
+															onValueChange={(value) => {
+																const newDate = new Date(field.value)
+																newDate.setHours(parseInt(value), 0, 0)
+																field.onChange(newDate)
+															}}
+															defaultValue={
+																field.value ? field.value.getHours().toString() : "12"
+															}
+														>
+															<SelectTrigger id="hours">
+																<SelectValue placeholder="Select hour" />
+															</SelectTrigger>
+															<SelectContent>
+																{Array.from({ length: 24 }, (_, i) => (
+																	<SelectItem key={i} value={i.toString()}>
+																		{i.toString().padStart(2, "0")}:00
+																	</SelectItem>
+																))}
+															</SelectContent>
+														</Select>
+													</div>
+												)}
 											</PopoverContent>
 										</Popover>
 										<FormMessage />
@@ -293,14 +365,15 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 							type="submit"
 							variant="ghost"
 							className="text-2xl hover:scale-110 transition-transform"
-							disabled={isSubmitting}
+							disabled={isPending || isSubmitting || isConfirming}
 						>
-							[ {isSubmitting ? "creating..." : "list"} ]
+							[ {buttonText} ]
 						</Button>
 						<Button
 							type="button"
 							variant="ghost"
-							onClick={toggleCreate}
+							onClick={handleClose}
+							disabled={isSubmitting || isConfirming}
 							className="text-2xl hover:scale-110 transition-transform"
 						>
 							[ cancel ]

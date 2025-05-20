@@ -1,7 +1,14 @@
 import { parseEther } from "viem"
 import { useWaitForTransactionReceipt } from "wagmi"
 import type { TokenSale, TokenData } from "../types/token.type"
-import { useReadFactoryTokenForSale, useWriteFactoryBuy, useWriteFactoryCreate } from "../generated"
+import {
+	useReadFactoryTokenForSale,
+	useWatchFactoryContractCreatedEvent,
+	useWriteFactoryBuy,
+	useWriteFactoryCreate,
+} from "../generated"
+import { toast } from "sonner"
+import { useEffect, useState } from "react"
 
 export function useTokenSale(tokenAddress: string) {
 	const { data } = useReadFactoryTokenForSale({
@@ -39,7 +46,43 @@ export function useBuyToken() {
 }
 
 export function useCreateToken() {
-	const { writeContract } = useWriteFactoryCreate()
+	const {
+		writeContract,
+		isPending,
+		data: tx,
+		isError,
+		error,
+		reset: resetWrite,
+	} = useWriteFactoryCreate({
+		mutation: {
+			onSuccess(data) {
+				toast.success("Transaction submitted")
+			},
+			onError(error) {
+				toast.error("Failed to create transaction")
+			},
+			onSettled() {
+				resetWrite()
+			},
+		},
+	})
+
+	// Wait for transaction receipt
+	const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+		hash: tx,
+	})
+
+	useWatchFactoryContractCreatedEvent({
+		onLogs(logs) {
+			// Only process if this log corresponds to our transaction
+			const [log] = logs
+			if (log.transactionHash === tx) {
+				const newTokenAddress = log.args.contractAddress
+				toast.success(`Token created at ${newTokenAddress}`)
+			}
+		},
+		enabled: Boolean(tx), // Only watch when we have a transaction
+	})
 
 	const createToken = async (
 		name: string,
@@ -48,12 +91,21 @@ export function useCreateToken() {
 		endTime: number,
 		signedUrl: string,
 		fee: bigint
-	) => {
-		return writeContract({
+	) =>
+		writeContract({
 			args: [name, symbol, BigInt(startTime), BigInt(endTime), signedUrl],
 			value: fee,
 		})
-	}
 
-	return { createToken }
+	return {
+		createToken,
+		isPending, // Wallet interaction
+		isConfirming, // Transaction confirming
+		isSuccess, // Transaction confirmed
+		isError, // Transaction failed
+		error, // Error details if any
+		reset: () => {
+			resetWrite()
+		},
+	}
 }

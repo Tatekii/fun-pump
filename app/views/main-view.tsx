@@ -57,14 +57,24 @@ export default function MainView() {
 			<div className="col-span-full">
 				<h1 className=" font-extrabold p-4">Token List</h1>
 
-				<div className="grid grid-cols-[repeat(auto-fill,minmax(300px,0fr))] gap-4 place-content-center text-center m-4">
-					{tokens.map((_token) => (
-						<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
-					))}
-				</div>
-				<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-					{isFetchingNextPage ? "Loading more..." : hasNextPage ? "Load More" : "Nothing more to load"}
-				</Button>
+				{isLoading ? (
+					<h1>Loading...</h1>
+				) : (
+					<>
+						<div className="grid grid-cols-[repeat(auto-fill,minmax(300px,0fr))] gap-4 place-content-center text-center m-4">
+							{tokens.map((_token) => (
+								<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
+							))}
+						</div>
+						<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+							{isFetchingNextPage
+								? "Loading more..."
+								: hasNextPage
+									? "Load More"
+									: "Nothing more to load"}
+						</Button>
+					</>
+				)}
 			</div>
 
 			<CreateTokenModal toggleCreate={toggleCreate} fee={fee} showCreate={showCreate} />
