@@ -26,10 +26,10 @@ const TokenCard: FC<TokenProps> = ({ toggleTrade, token, ...rest }) => {
 		<TiltedCard
 			altText={token.name}
 			captionText={token.name}
-			containerHeight="300px"
-			containerWidth="300px"
-			imageHeight="300px"
-			imageWidth="300px"
+			containerHeight="200px"
+			containerWidth="200px"
+			imageHeight="200px"
+			imageWidth="200px"
 			rotateAmplitude={12}
 			scaleOnHover={1.2}
 			showMobileWarning={false}
@@ -38,7 +38,7 @@ const TokenCard: FC<TokenProps> = ({ toggleTrade, token, ...rest }) => {
 			imageSrc={`${token.signedUrl}`}
 			overlayContent={
 				<div className="bg-black/50 backdrop-blur-sm p-3 rounded-lg w-full h-full flex flex-col justify-center cursor-pointer">
-					<p>{token.name}</p>
+					<p className="font-bold text-xl">{token.name}</p>
 					<p className="text-sm text-center lowercase">
 						created by {token.creator.slice(0, 6) + "..." + token.creator.slice(38, 42)}
 					</p>

@@ -2,28 +2,27 @@
 
 import { useState } from "react"
 import { useAccount } from "wagmi"
+import { useAtomValue } from "jotai"
 import { Button } from "@/components/ui/button"
+import { filterAtom } from "../stores/filter"
 import CreateTokenModal from "../components/create-token-modal"
 import TokenCard from "../components/token-card"
 import TradeModal from "../components/trade-modal"
-import { useInfiniteTokens } from "../hooks/useInfiniteTokens"
+import { TokenFilterComponent } from "../components/token-filter"
 import { useReadFactoryFee } from "../generated"
-import { toast } from "sonner"
 import { TokenData } from "../types/token.type"
+import { flatTokensAtom, tokensQueryAtom } from "../stores/tokens"
 
 export default function MainView() {
 	const { address: account } = useAccount()
 	const { data: fee = BigInt(0) } = useReadFactoryFee()
-	const {
-		tokens, // All fetched tokens combined
-		fetchNextPage, // Function to load more tokens
-		hasNextPage, // Boolean indicating if more tokens exist
-		isFetchingNextPage, // Loading state for next page
-		isError, // Error state
-		error, // Error object if any
-		isLoading, // Initial loading state
-		isSuccess, // Success state
-	} = useInfiniteTokens()
+
+	// Get tokens data from Jotai atoms
+	const tokens = useAtomValue(flatTokensAtom)
+
+	const { fetchNextPage, hasNextPage, isFetchingNextPage, isError, error, isLoading, isSuccess } =
+		useAtomValue(tokensQueryAtom)
+
 	const [showCreate, setShowCreate] = useState(false)
 	const [showTrade, setShowTrade] = useState(false)
 	const [selectedToken, setSelectedToken] = useState<TokenData | null>(null)
@@ -54,34 +53,39 @@ export default function MainView() {
 				</Button>
 			</div>
 
-			<div className="col-span-full">
-				<h1 className=" font-extrabold p-4">Token List</h1>
+			<div className="col-span-full space-y-8">
+				<div className="space-y-4">
+					<h1 className="font-extrabold p-4">Token List</h1>
 
-				{isLoading ? (
-					<h1>Loading...</h1>
-				) : (
-					<>
-						<div className="grid grid-cols-[repeat(auto-fill,minmax(300px,0fr))] gap-4 place-content-center text-center m-4">
-							{tokens.map((_token) => (
-								<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
-							))}
-						</div>
-						<Button onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-							{isFetchingNextPage
-								? "Loading more..."
-								: hasNextPage
-									? "Load More"
-									: "Nothing more to load"}
-						</Button>
-					</>
-				)}
+					<TokenFilterComponent />
+
+					<div className="grid grid-cols-[repeat(auto-fill,minmax(200px,0fr))] gap-8 place-content-center text-center m-4">
+						{tokens.map((_token) => (
+							<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
+						))}
+					</div>
+				</div>
+
+				<Button
+					onClick={() => fetchNextPage()}
+					disabled={!hasNextPage || isFetchingNextPage}
+					className="mx-auto"
+				>
+					{isLoading
+						? "Loading..."
+						: isFetchingNextPage
+							? "Loading more..."
+							: hasNextPage
+								? "Load More"
+								: "Nothing more to load"}
+				</Button>
 			</div>
 
 			<CreateTokenModal toggleCreate={toggleCreate} fee={fee} showCreate={showCreate} />
 
-			{selectedToken ? (
+			{selectedToken && (
 				<TradeModal open={showTrade} toggleTrade={() => toggleTrade(null)} token={selectedToken} />
-			) : null}
+			)}
 		</main>
 	)
 }
