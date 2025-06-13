@@ -1,0 +1,154 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "CrowdfundingLib",
+  "sourceName": "contracts/libraries/CrowdfundingLib.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "FEE_DENOMINATOR",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "FUNDING_LIMIT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "FUNDING_TARGET",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "SOFT_CAP",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_feeRate",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculatePlatformFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_sold",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateTokenPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_raised",
+          "type": "uint256"
+        }
+      ],
+      "name": "isFundingSuccessful",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalPurchased",
+          "type": "uint256"
+        }
+      ],
+      "name": "validateSaleParams",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x610304610039600b82828239805160001a607314602c57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600436106100925760003560e01c8063b652dc2f11610065578063b652dc2f14610100578063c8df5a621461010f578063d73792a914610122578063ef11c8091461012b57600080fd5b806301d1ade114610097578063102514cc146100b9578063976c3d04146100e5578063aea6c021146100f8575b600080fd5b6100a66729a2241af62c000081565b6040519081526020015b60405180910390f35b6100d56100c7366004610231565b670de0b6b3a7640000111590565b60405190151581526020016100b0565b6100a66100f336600461024a565b61013e565b6100a661019e565b6100a6670de0b6b3a764000081565b6100d561011d36600461024a565b6101b6565b6100a661271081565b6100a661013936600461024a565b610211565b6000655af3107a40008069021e19e0c9bab2400000838261015f8389610282565b61016990856102a4565b61017391906102bb565b9050610187670de0b6b3a764000087610282565b61019190826102a4565b9450505050505b92915050565b6101b3670de0b6b3a76400006207a1206102a4565b81565b6000670de0b6b3a76400008310806101d7575069021e19e0c9bab240000083115b156101e457506000610198565b6101f9670de0b6b3a76400006207a1206102a4565b82111561020857506000610198565b50600192915050565b600061271061022083856102a4565b61022a9190610282565b9392505050565b60006020828403121561024357600080fd5b5035919050565b6000806040838503121561025d57600080fd5b50508035926020909101359150565b634e487b7160e01b600052601160045260246000fd5b60008261029f57634e487b7160e01b600052601260045260246000fd5b500490565b80820281158282048414176101985761019861026c565b808201808211156101985761019861026c56fea2646970667358221220325796623e656284b2eea2544a1a51dc165646e227b5a1c734979af75ebefad964736f6c634300081b0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600436106100925760003560e01c8063b652dc2f11610065578063b652dc2f14610100578063c8df5a621461010f578063d73792a914610122578063ef11c8091461012b57600080fd5b806301d1ade114610097578063102514cc146100b9578063976c3d04146100e5578063aea6c021146100f8575b600080fd5b6100a66729a2241af62c000081565b6040519081526020015b60405180910390f35b6100d56100c7366004610231565b670de0b6b3a7640000111590565b60405190151581526020016100b0565b6100a66100f336600461024a565b61013e565b6100a661019e565b6100a6670de0b6b3a764000081565b6100d561011d36600461024a565b6101b6565b6100a661271081565b6100a661013936600461024a565b610211565b6000655af3107a40008069021e19e0c9bab2400000838261015f8389610282565b61016990856102a4565b61017391906102bb565b9050610187670de0b6b3a764000087610282565b61019190826102a4565b9450505050505b92915050565b6101b3670de0b6b3a76400006207a1206102a4565b81565b6000670de0b6b3a76400008310806101d7575069021e19e0c9bab240000083115b156101e457506000610198565b6101f9670de0b6b3a76400006207a1206102a4565b82111561020857506000610198565b50600192915050565b600061271061022083856102a4565b61022a9190610282565b9392505050565b60006020828403121561024357600080fd5b5035919050565b6000806040838503121561025d57600080fd5b50508035926020909101359150565b634e487b7160e01b600052601160045260246000fd5b60008261029f57634e487b7160e01b600052601260045260246000fd5b500490565b80820281158282048414176101985761019861026c565b808201808211156101985761019861026c56fea2646970667358221220325796623e656284b2eea2544a1a51dc165646e227b5a1c734979af75ebefad964736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

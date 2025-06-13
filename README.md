@@ -17,6 +17,7 @@ A decentralized crowdfunding platform using smart contracts and modern web techn
 - [Tailwind CSS](https://tailwindcss.com/) (Styling)
 - [React Hook Form](https://react-hook-form.com/) (Form Handling)
 - [Zod](https://zod.dev/) (Schema Validation)
+- [Jotai](https://jotai.org/) (State Management)
 
 ## Requirements For Initial Setup
 
@@ -24,19 +25,18 @@ A decentralized crowdfunding platform using smart contracts and modern web techn
 
 ## Project Structure
 
+This is a monorepo structure with the following packages:
+
 ```
-├── app/                    # Next.js frontend application
-│   ├── components/         # React components
-│   ├── hooks/             # Custom React hooks
-│   └── generated.ts       # Auto-generated contract types
-├── contracts/             # Solidity smart contracts
-│   ├── Factory.sol        # Main factory contract
-│   ├── Token.sol          # Token contract
-│   ├── libraries/         # Contract libraries
-│   └── interfaces/        # Contract interfaces
-├── ignition/              # Hardhat Ignition deployment
-│   └── modules/           # Deployment modules
-└── test/                  # Contract tests
+├── packages/
+│   ├── smart-contract/     # Solidity smart contracts
+│   │   ├── contracts/      # Smart contract source files
+│   │   ├── test/           # Contract tests
+│   │   └── ignition/       # Hardhat Ignition deployment
+│   └── web/                # Next.js frontend application
+│       ├── app/            # Next.js app directory
+│       ├── components/     # React components
+│       └── lib/            # Utility functions
 ```
 
 ## Setting Up
@@ -49,33 +49,39 @@ cd fun-pump
 
 ### 2. Install Dependencies
 ```bash
+# Run the setup script
+./setup-monorepo.sh
+
+# Or manually:
 bun install
+cd packages/smart-contract && bun install
+cd ../web && bun install
 ```
 
 ### 3. Compile Contracts
 ```bash
-bun hardhat compile
+bun compile
 ```
 
 ### 4. Start Local Node
 ```bash
-bun hardhat node
+bun node
 ```
 
 ### 5. Deploy Contracts
 In a separate terminal, run:
 ```bash
 # For local development
-bun hardhat ignition deploy ignition/modules/deploy.js --network localhost
+bun deploy:local
 
 # For deployment with reset
-bun hardhat ignition deploy ignition/modules/deploy.js --network localhost --reset
+bun deploy:local:reset
 ```
 
 ### 6. Generate Contract Types
 After deployment, generate the TypeScript bindings:
 ```bash
-bun wagmi generate
+bun generate
 ```
 
 ### 7. Start Frontend
@@ -83,9 +89,15 @@ bun wagmi generate
 bun dev
 ```
 
+### 8. Full Development Environment
+To start all services in one command:
+```bash
+bun dev:full
+```
+
 ## Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the `packages/web` directory with the following variables:
 
 ```bash
 # Pinata IPFS
