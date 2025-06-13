@@ -1,8 +1,8 @@
 import { atom } from "jotai"
 import { atomWithInfiniteQuery, atomWithQuery } from "jotai-tanstack-query"
 import { filterAtom } from "./filter"
-import { TokenData } from "../types/token.type"
-import { config } from "../config/wagmi"
+import { CurveType, TokenData } from "../types/token.type"
+import { config } from "../config/rainbowkit.config"
 import { readContract } from "wagmi/actions"
 import { factoryAddress, factoryAbi, useReadFactoryTotalTokens } from "../generated"
 
@@ -79,6 +79,8 @@ async function fetchTokenPage(totalTokens: bigint, pageParam: number, filter: an
 					endTime: tokenSale[6],
 					saleStage: tokenSale[7],
 					signedUrl: tokenSale[8],
+					curveType:tokenSale[9] as unknown as CurveType,
+					curveSlope:tokenSale[10],
 				}
 
 				if (filterToken(token, filter)) {

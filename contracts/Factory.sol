@@ -97,13 +97,28 @@ contract Factory is IFactory {
         return CrowdfundingLib.calculateTokenPrice(_sold, 1 ether) / 1 ether;
     }
 
+    function getPredictedPrice(
+        address _token,
+        uint256 _amount
+    ) public view override returns (uint256) {
+        TokenSale memory sale = tokenForSale[_token];
+        return CrowdfundingLib.calculateBondingPrice(
+            sale.sold,
+            _amount,
+            sale.curveType,
+            sale.curveSlope
+        );
+    }
+
     // Main functions
     function create(
         string memory _name,
         string memory _symbol,
         uint256 _startTime,
         uint256 _endTime,
-        string memory _imageHash
+        string memory _imageHash,
+        uint8 _curveType,
+        uint256 _curveSlope
     ) public payable override whenNotPaused {
         require(
             bytes(_name).length > 0 && bytes(_name).length <= 32,
@@ -116,6 +131,7 @@ contract Factory is IFactory {
         require(msg.value >= fee, "Insufficient fee");
         require(_startTime > block.timestamp, "Start time must be in future");
         require(_endTime > _startTime, "End time must be after start time");
+        require(_curveSlope > 0, "Curve slope must be positive");
 
         Token token = new Token(msg.sender, _name, _symbol, 1_000_000 ether);
         tokens.push(address(token));
@@ -130,7 +146,9 @@ contract Factory is IFactory {
             startTime: _startTime,
             endTime: _endTime,
             stage: SaleStage.OPENING,
-            signedUrl: _imageHash
+            signedUrl: _imageHash,
+            curveType: _curveType,
+            curveSlope: _curveSlope
         });
 
         tokenForSale[address(token)] = _sale;
@@ -143,6 +161,8 @@ contract Factory is IFactory {
     ) external payable override nonReentrant whenNotPaused {
         TokenSale storage curForSale = tokenForSale[_token];
         require(curForSale.stage == SaleStage.OPENING, "Sale not active");
+        require(block.timestamp >= curForSale.startTime, "Sale not started");
+        require(block.timestamp <= curForSale.endTime, "Sale ended");
 
         require(
             CrowdfundingLib.validateSaleParams(
@@ -152,10 +172,14 @@ contract Factory is IFactory {
             "Invalid purchase params"
         );
 
-        uint256 price = CrowdfundingLib.calculateTokenPrice(
+        // 使用邦定曲线计算价格
+        uint256 price = CrowdfundingLib.calculateBondingPrice(
             curForSale.sold,
-            _amount
+            _amount,
+            curForSale.curveType,
+            curForSale.curveSlope
         );
+        
         require(msg.value >= price, "Insufficient payment");
 
         if (msg.value > price) {
@@ -168,14 +192,13 @@ contract Factory is IFactory {
         userPurchases[_token][msg.sender] += _amount;
         curForSale.sold += _amount;
         curForSale.raised += price;
-        contributions[_token][msg.sender] += msg.value;
+        contributions[_token][msg.sender] += price;
 
         if (
             curForSale.sold >= CrowdfundingLib.FUNDING_LIMIT ||
             curForSale.raised >= CrowdfundingLib.FUNDING_TARGET
         ) {
             curForSale.stage = SaleStage.ENDED;
-
             emit SaleClosed(_token);
         }
 

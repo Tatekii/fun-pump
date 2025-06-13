@@ -13,6 +13,15 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ResponsiveModal, ResponsiveModalProps } from "./responsive-modal"
+import { getCurveTypeName } from "./token-card"
+
+
+// 助手函数：格式化斜率显示
+const formatSlope = (slope: bigint): string => {
+  // 将BigInt转换为可读格式，考虑到1e18的缩放
+  const slopeNumber = Number(slope) / 1e18;
+  return slopeNumber.toFixed(6);
+};
 
 interface ITradeModalProps extends Pick<ResponsiveModalProps, "open"> {
 	toggleTrade: () => void
@@ -58,6 +67,19 @@ const TradeModal: FC<ITradeModalProps> = ({ toggleTrade, token, open }) => {
 					<img src={token.signedUrl} alt="token" width={256} height={256} className="mx-auto" />
 					<p className="text-sm">marketcap: {formatEther(token.raised)} ETH</p>
 					<p className="text-sm">base cost: {formatEther(cost)} ETH</p>
+
+					{token.curveType !== undefined && (
+						<div className="bg-gray-800 p-2 rounded-md text-sm">
+							<p>
+								Bonding Curve:{" "}
+								<span className="font-bold">{getCurveTypeName(token.curveType)}</span>
+							</p>
+							<p className="text-xs mt-1">Curve parameters determine token price based on supply</p>
+							{token.curveSlope && (
+								<p className="text-xs mt-1">Slope: {formatSlope(token.curveSlope)}</p>
+							)}
+						</div>
+					)}
 				</CardContent>
 			</Card>
 

@@ -1,6 +1,6 @@
 import { parseEther } from "viem"
 import { useWaitForTransactionReceipt } from "wagmi"
-import type { TokenSale, TokenData } from "../types/token.type"
+import type { TokenSale, TokenData, CurveType } from "../types/token.type"
 import {
 	useReadFactoryTokenForSale,
 	useWatchFactoryContractCreatedEvent,
@@ -8,7 +8,6 @@ import {
 	useWriteFactoryCreate,
 } from "../generated"
 import { toast } from "sonner"
-import { useEffect, useState } from "react"
 
 export function useTokenSale(tokenAddress: string) {
 	const { data } = useReadFactoryTokenForSale({
@@ -18,15 +17,18 @@ export function useTokenSale(tokenAddress: string) {
 	// Process token sale data
 	const formattedData = data
 		? ({
-				token: data[0],
-				name: data[1],
-				creator: data[2],
-				sold: data[3],
-				raised: data[4],
-				startTime: data[5],
-				endTime: data[6],
-				saleStage: data[7],
-			} as TokenSale)
+			token: data[0],
+			name: data[1],
+			creator: data[2],
+			sold: data[3],
+			raised: data[4],
+			startTime: data[5],
+			endTime: data[6],
+			saleStage: data[7],
+			signedUrl: data[8],
+			curveType: data[9],
+			curveSlope: data[10],
+		} as unknown as TokenSale)
 		: undefined
 
 	return { data: formattedData }
@@ -90,10 +92,12 @@ export function useCreateToken() {
 		startTime: number,
 		endTime: number,
 		signedUrl: string,
+		curveType: CurveType,
+		curveSlope: bigint,
 		fee: bigint
 	) =>
 		writeContract({
-			args: [name, symbol, BigInt(startTime), BigInt(endTime), signedUrl],
+			args: [name, symbol, BigInt(startTime), BigInt(endTime), signedUrl, Number(curveType), curveSlope],
 			value: fee,
 		})
 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.27;
 
+import {CrowdfundingLib} from "../libraries/CrowdfundingLib.sol";
+
 interface IFactory {
     // Structs
     struct TokenSale {
@@ -11,14 +13,16 @@ interface IFactory {
         uint256 raised;
         uint256 startTime;
         uint256 endTime;
-        SaleStage stage;  // Removed isOpen, simplified stages
+        SaleStage stage; // Removed isOpen, simplified stages
         string signedUrl;
+        uint8 curveType; // 邦定曲线类型
+        uint256 curveSlope; // 曲线斜率参数
     }
 
     // Enums
     enum SaleStage {
-        OPENING,  // Public sale is active - Open
-        ENDED    // Sale has ended - Closed
+        OPENING, // Public sale is active - Open
+        ENDED // Sale has ended - Closed
     }
 
     // Events
@@ -32,15 +36,28 @@ interface IFactory {
 
     // Admin Functions
     function setPaused(bool _paused) external;
+
     function setFee(uint256 _newFee) external;
+
     function updatePlatformFee(uint256 _newFee) external;
+
     function withdraw(uint256 _amount) external;
 
     // View Functions
-    function getTokenForSale(uint256 _index) external view returns (TokenSale memory);
+    function getTokenForSale(
+        uint256 _index
+    ) external view returns (TokenSale memory);
+
     function getCost(uint256 _sold) external pure returns (uint256);
+
     function calculateFees(uint256 _amount) external view returns (uint256);
+
     function checkFundingStatus(address _token) external view returns (bool);
+
+    function getPredictedPrice(
+        address _token,
+        uint256 _amount
+    ) external view returns (uint256);
 
     // Main Functions
     function create(
@@ -48,23 +65,46 @@ interface IFactory {
         string memory _symbol,
         uint256 _startTime,
         uint256 _endTime,
-        string memory signedUrl
+        string memory signedUrl,
+        uint8 _curveType,
+        uint256 _curveSlope
     ) external payable;
+
     function buy(address _token, uint256 _amount) external payable;
+
     function deposit(address _token) external;
+
     function claimRefund(address _token) external;
+
     function setStage(address _token, SaleStage _stage) external;
-    function setTestSaleData(address _token, uint256 _sold, uint256 _raised) external;
-    function setTestUserPurchases(address _token, address _user, uint256 _amount) external;
+
+    function setTestSaleData(
+        address _token,
+        uint256 _sold,
+        uint256 _raised
+    ) external;
+
+    function setTestUserPurchases(
+        address _token,
+        address _user,
+        uint256 _amount
+    ) external;
 
     // State Variables (getters)
     function fee() external view returns (uint256);
+
     function platformFee() external view returns (uint256);
+
     function owner() external view returns (address);
+
     function paused() external view returns (bool);
+
     function totalTokens() external view returns (uint256);
+
     function tokens(uint256) external view returns (address);
+
     // function vestingSchedules(address, address) external view returns (VestingSchedule memory);
     function contributions(address, address) external view returns (uint256);
+
     function userPurchases(address, address) external view returns (uint256);
 }

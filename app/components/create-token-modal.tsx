@@ -15,11 +15,12 @@ import { Calendar } from "@/components/ui/calendar"
 import { ResponsiveModal } from "./responsive-modal"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CurveType } from "../types/token.type"
 
 const MAX_FILE_SIZE = 15 * 1024 // 15kb
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/gif"]
 
-const formSchema = z
+export const formSchema = z
 	.object({
 		name: z
 			.string()
@@ -48,6 +49,16 @@ const formSchema = z
 				(file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
 				"Only .jpg, .jpeg, .png and .gif formats are supported"
 			),
+		curveType: z.nativeEnum(CurveType, {
+			required_error: "Please select a curve type",
+		}),
+		curveSlope: z
+			.string()
+			.min(1, "Curve slope is required")
+			.refine((val) => {
+				const num = Number(val)
+				return !isNaN(num) && num > 0
+			}, "Curve slope must be a positive number"),
 	})
 	.refine(
 		(data) => {
@@ -72,17 +83,19 @@ const formDefaultValue = {
 	name: "",
 	symbol: "",
 	startTime: (() => {
-		const nextHour = new Date();
-		nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0); // Next hour with 0 minutes and seconds
-		return nextHour;
+		const nextHour = new Date()
+		nextHour.setHours(nextHour.getHours() + 1, 0, 0, 0) // Next hour with 0 minutes and seconds
+		return nextHour
 	})(),
 	endTime: (() => {
-		const nextDay = new Date();
-		nextDay.setDate(nextDay.getDate() + 1);
-		nextDay.setHours(nextDay.getHours() + 1, 0, 0, 0); // Same time next day
-		return nextDay;
+		const nextDay = new Date()
+		nextDay.setDate(nextDay.getDate() + 1)
+		nextDay.setHours(nextDay.getHours() + 1, 0, 0, 0) // Same time next day
+		return nextDay
 	})(),
-	image: undefined,
+	image: undefined as unknown as File,
+	curveType: CurveType.LINEAR, // Default linear curve
+	curveSlope: "1", // Default slope
 }
 
 const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCreate }) => {
@@ -120,7 +133,19 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			})
 			const signedUrl = await uploadRequest.json()
 
-			await createToken(values.name, values.symbol, startTimestamp, endTimestamp, signedUrl, fee)
+			// 将斜率转换为合适的单位
+			const curveSlope = BigInt(Math.floor(Number(values.curveSlope) * 1e18))
+
+			await createToken(
+				values.name,
+				values.symbol,
+				startTimestamp,
+				endTimestamp,
+				signedUrl,
+				values.curveType,
+				curveSlope,
+				fee
+			)
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -354,6 +379,53 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 												)}
 											</PopoverContent>
 										</Popover>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<div className="space-y-4 mt-4">
+							<FormField
+								control={form.control}
+								name="curveType"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Bonding Curve Type</FormLabel>
+										<Select onValueChange={field.onChange} defaultValue={field.value}>
+											<FormControl>
+												<SelectTrigger>
+													<SelectValue placeholder="Select curve type" />
+												</SelectTrigger>
+											</FormControl>
+											<SelectContent>
+												<SelectItem value="0">Linear (y = mx)</SelectItem>
+												<SelectItem value="1">Quadratic (y = mx²)</SelectItem>
+												<SelectItem value="2">Exponential (y = m * 1.1^x)</SelectItem>
+											</SelectContent>
+										</Select>
+										<FormDescription>Choose the curve type for token pricing</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="curveSlope"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Curve Slope Parameter</FormLabel>
+										<FormControl>
+											<Input
+												type="number"
+												step="0.000001"
+												min="0.000001"
+												placeholder="Slope (e.g. 0.01)"
+												{...field}
+											/>
+										</FormControl>
+										<FormDescription>Higher values = steeper price increases</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}

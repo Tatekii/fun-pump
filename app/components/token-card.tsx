@@ -1,7 +1,28 @@
 import { FC } from "react"
 import { formatEther } from "viem"
-import { TokenData } from "../types/token.type"
+import { CurveType, TokenData } from "../types/token.type"
 import TiltedCard from "@/components/TiltedCard/TiltedCard"
+
+// 助手函数：获取曲线类型名称
+export const getCurveTypeName = (curveType: CurveType): string => {
+  switch (curveType) {
+	case CurveType.LINEAR:
+	  return "Linear";
+	case CurveType.QUADRATIC:
+	  return "Quadratic";
+	case CurveType.EXPONENTIAL:
+	  return "Exponential";
+    default:
+      return "Unknown";
+  }
+};
+
+// 助手函数：格式化斜率显示
+const formatSlope = (slope: bigint): string => {
+  // 将BigInt转换为可读格式，考虑到1e18的缩放
+  const slopeNumber = Number(slope) / 1e18;
+  return slopeNumber.toFixed(6);
+};
 
 interface TokenProps {
 	toggleTrade: (token: TokenData) => void
@@ -45,6 +66,11 @@ const TokenCard: FC<TokenProps> = ({ toggleTrade, token, ...rest }) => {
 
 					<div className="space-y-4 text-center">
 						<p className="text-sm lowercase">market Cap: {formatEther(token.raised)} eth</p>
+						{token.curveType !== undefined && (
+							<p className="text-xs lowercase">
+								Curve: {getCurveTypeName(token.curveType)} (slope: {formatSlope(token.curveSlope || 0n)})
+							</p>
+						)}
 					</div>
 				</div>
 			}

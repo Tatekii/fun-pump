@@ -10,8 +10,7 @@ import {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const crowdfundingLibAbi = [
   {
@@ -82,17 +81,14 @@ export const crowdfundingLibAbi = [
 ] as const
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const crowdfundingLibAddress = {
-  31337: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-  11155111: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
+  31337: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
 } as const
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const crowdfundingLibConfig = {
   address: crowdfundingLibAddress,
@@ -296,8 +292,7 @@ export const erc20Abi = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const factoryAbi = [
   {
@@ -487,6 +482,8 @@ export const factoryAbi = [
       { name: '_startTime', internalType: 'uint256', type: 'uint256' },
       { name: '_endTime', internalType: 'uint256', type: 'uint256' },
       { name: '_imageHash', internalType: 'string', type: 'string' },
+      { name: '_curveType', internalType: 'uint8', type: 'uint8' },
+      { name: '_curveSlope', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'create',
     outputs: [],
@@ -515,6 +512,16 @@ export const factoryAbi = [
   },
   {
     type: 'function',
+    inputs: [
+      { name: '_token', internalType: 'address', type: 'address' },
+      { name: '_amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getPredictedPrice',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [{ name: '_index', internalType: 'uint256', type: 'uint256' }],
     name: 'getTokenForSale',
     outputs: [
@@ -536,6 +543,8 @@ export const factoryAbi = [
             type: 'uint8',
           },
           { name: 'signedUrl', internalType: 'string', type: 'string' },
+          { name: 'curveType', internalType: 'uint8', type: 'uint8' },
+          { name: 'curveSlope', internalType: 'uint256', type: 'uint256' },
         ],
       },
     ],
@@ -626,6 +635,8 @@ export const factoryAbi = [
       { name: 'endTime', internalType: 'uint256', type: 'uint256' },
       { name: 'stage', internalType: 'enum IFactory.SaleStage', type: 'uint8' },
       { name: 'signedUrl', internalType: 'string', type: 'string' },
+      { name: 'curveType', internalType: 'uint8', type: 'uint8' },
+      { name: 'curveSlope', internalType: 'uint256', type: 'uint256' },
     ],
     stateMutability: 'view',
   },
@@ -670,17 +681,14 @@ export const factoryAbi = [
 ] as const
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const factoryAddress = {
-  31337: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
-  11155111: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
+  31337: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
 } as const
 
 /**
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const factoryConfig = {
   address: factoryAddress,
@@ -1251,6 +1259,8 @@ export const iFactoryAbi = [
       { name: '_startTime', internalType: 'uint256', type: 'uint256' },
       { name: '_endTime', internalType: 'uint256', type: 'uint256' },
       { name: 'signedUrl', internalType: 'string', type: 'string' },
+      { name: '_curveType', internalType: 'uint8', type: 'uint8' },
+      { name: '_curveSlope', internalType: 'uint256', type: 'uint256' },
     ],
     name: 'create',
     outputs: [],
@@ -1279,6 +1289,16 @@ export const iFactoryAbi = [
   },
   {
     type: 'function',
+    inputs: [
+      { name: '_token', internalType: 'address', type: 'address' },
+      { name: '_amount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'getPredictedPrice',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [{ name: '_index', internalType: 'uint256', type: 'uint256' }],
     name: 'getTokenForSale',
     outputs: [
@@ -1300,6 +1320,8 @@ export const iFactoryAbi = [
             type: 'uint8',
           },
           { name: 'signedUrl', internalType: 'string', type: 'string' },
+          { name: 'curveType', internalType: 'uint8', type: 'uint8' },
+          { name: 'curveSlope', internalType: 'uint256', type: 'uint256' },
         ],
       },
     ],
@@ -1608,8 +1630,7 @@ export const tokenAbi = [
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLib = /*#__PURE__*/ createUseReadContract({
   abi: crowdfundingLibAbi,
@@ -1619,8 +1640,7 @@ export const useReadCrowdfundingLib = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"FEE_DENOMINATOR"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibFeeDenominator =
   /*#__PURE__*/ createUseReadContract({
@@ -1632,8 +1652,7 @@ export const useReadCrowdfundingLibFeeDenominator =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"FUNDING_LIMIT"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibFundingLimit =
   /*#__PURE__*/ createUseReadContract({
@@ -1645,8 +1664,7 @@ export const useReadCrowdfundingLibFundingLimit =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"FUNDING_TARGET"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibFundingTarget =
   /*#__PURE__*/ createUseReadContract({
@@ -1658,8 +1676,7 @@ export const useReadCrowdfundingLibFundingTarget =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"SOFT_CAP"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibSoftCap =
   /*#__PURE__*/ createUseReadContract({
@@ -1671,8 +1688,7 @@ export const useReadCrowdfundingLibSoftCap =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"calculatePlatformFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibCalculatePlatformFee =
   /*#__PURE__*/ createUseReadContract({
@@ -1684,8 +1700,7 @@ export const useReadCrowdfundingLibCalculatePlatformFee =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"calculateTokenPrice"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibCalculateTokenPrice =
   /*#__PURE__*/ createUseReadContract({
@@ -1697,8 +1712,7 @@ export const useReadCrowdfundingLibCalculateTokenPrice =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"isFundingSuccessful"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibIsFundingSuccessful =
   /*#__PURE__*/ createUseReadContract({
@@ -1710,8 +1724,7 @@ export const useReadCrowdfundingLibIsFundingSuccessful =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link crowdfundingLibAbi}__ and `functionName` set to `"validateSaleParams"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0)
+ *
  */
 export const useReadCrowdfundingLibValidateSaleParams =
   /*#__PURE__*/ createUseReadContract({
@@ -1899,8 +1912,7 @@ export const useWatchErc20TransferEvent =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactory = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1910,8 +1922,7 @@ export const useReadFactory = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"calculateFees"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryCalculateFees = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1922,8 +1933,7 @@ export const useReadFactoryCalculateFees = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"checkFundingStatus"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryCheckFundingStatus =
   /*#__PURE__*/ createUseReadContract({
@@ -1935,8 +1945,7 @@ export const useReadFactoryCheckFundingStatus =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"contributions"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryContributions = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1947,8 +1956,7 @@ export const useReadFactoryContributions = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"fee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryFee = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1959,8 +1967,7 @@ export const useReadFactoryFee = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"getCost"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryGetCost = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1969,10 +1976,21 @@ export const useReadFactoryGetCost = /*#__PURE__*/ createUseReadContract({
 })
 
 /**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"getPredictedPrice"`
+ *
+ *
+ */
+export const useReadFactoryGetPredictedPrice =
+  /*#__PURE__*/ createUseReadContract({
+    abi: factoryAbi,
+    address: factoryAddress,
+    functionName: 'getPredictedPrice',
+  })
+
+/**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"getTokenForSale"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryGetTokenForSale =
   /*#__PURE__*/ createUseReadContract({
@@ -1984,8 +2002,7 @@ export const useReadFactoryGetTokenForSale =
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"owner"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryOwner = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -1996,8 +2013,7 @@ export const useReadFactoryOwner = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"paused"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryPaused = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2008,8 +2024,7 @@ export const useReadFactoryPaused = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"platformFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryPlatformFee = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2020,8 +2035,7 @@ export const useReadFactoryPlatformFee = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"tokenForSale"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryTokenForSale = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2032,8 +2046,7 @@ export const useReadFactoryTokenForSale = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"tokens"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryTokens = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2044,8 +2057,7 @@ export const useReadFactoryTokens = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"totalTokens"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryTotalTokens = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2056,8 +2068,7 @@ export const useReadFactoryTotalTokens = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"userPurchases"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useReadFactoryUserPurchases = /*#__PURE__*/ createUseReadContract({
   abi: factoryAbi,
@@ -2068,8 +2079,7 @@ export const useReadFactoryUserPurchases = /*#__PURE__*/ createUseReadContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactory = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2079,8 +2089,7 @@ export const useWriteFactory = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"buy"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryBuy = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2091,8 +2100,7 @@ export const useWriteFactoryBuy = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"claimRefund"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryClaimRefund = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2103,8 +2111,7 @@ export const useWriteFactoryClaimRefund = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"create"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryCreate = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2115,8 +2122,7 @@ export const useWriteFactoryCreate = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"deposit"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryDeposit = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2127,8 +2133,7 @@ export const useWriteFactoryDeposit = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactorySetFee = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2139,8 +2144,7 @@ export const useWriteFactorySetFee = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setPaused"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactorySetPaused = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2151,8 +2155,7 @@ export const useWriteFactorySetPaused = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setStage"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactorySetStage = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2163,8 +2166,7 @@ export const useWriteFactorySetStage = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setTestSaleData"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactorySetTestSaleData =
   /*#__PURE__*/ createUseWriteContract({
@@ -2176,8 +2178,7 @@ export const useWriteFactorySetTestSaleData =
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setTestUserPurchases"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactorySetTestUserPurchases =
   /*#__PURE__*/ createUseWriteContract({
@@ -2189,8 +2190,7 @@ export const useWriteFactorySetTestUserPurchases =
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"updatePlatformFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryUpdatePlatformFee =
   /*#__PURE__*/ createUseWriteContract({
@@ -2202,8 +2202,7 @@ export const useWriteFactoryUpdatePlatformFee =
 /**
  * Wraps __{@link useWriteContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"withdraw"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWriteFactoryWithdraw = /*#__PURE__*/ createUseWriteContract({
   abi: factoryAbi,
@@ -2214,8 +2213,7 @@ export const useWriteFactoryWithdraw = /*#__PURE__*/ createUseWriteContract({
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactory = /*#__PURE__*/ createUseSimulateContract({
   abi: factoryAbi,
@@ -2225,8 +2223,7 @@ export const useSimulateFactory = /*#__PURE__*/ createUseSimulateContract({
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"buy"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryBuy = /*#__PURE__*/ createUseSimulateContract({
   abi: factoryAbi,
@@ -2237,8 +2234,7 @@ export const useSimulateFactoryBuy = /*#__PURE__*/ createUseSimulateContract({
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"claimRefund"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryClaimRefund =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2250,8 +2246,7 @@ export const useSimulateFactoryClaimRefund =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"create"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryCreate = /*#__PURE__*/ createUseSimulateContract(
   { abi: factoryAbi, address: factoryAddress, functionName: 'create' },
@@ -2260,8 +2255,7 @@ export const useSimulateFactoryCreate = /*#__PURE__*/ createUseSimulateContract(
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"deposit"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryDeposit =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2273,8 +2267,7 @@ export const useSimulateFactoryDeposit =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactorySetFee = /*#__PURE__*/ createUseSimulateContract(
   { abi: factoryAbi, address: factoryAddress, functionName: 'setFee' },
@@ -2283,8 +2276,7 @@ export const useSimulateFactorySetFee = /*#__PURE__*/ createUseSimulateContract(
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setPaused"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactorySetPaused =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2296,8 +2288,7 @@ export const useSimulateFactorySetPaused =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setStage"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactorySetStage =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2309,8 +2300,7 @@ export const useSimulateFactorySetStage =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setTestSaleData"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactorySetTestSaleData =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2322,8 +2312,7 @@ export const useSimulateFactorySetTestSaleData =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"setTestUserPurchases"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactorySetTestUserPurchases =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2335,8 +2324,7 @@ export const useSimulateFactorySetTestUserPurchases =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"updatePlatformFee"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryUpdatePlatformFee =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2348,8 +2336,7 @@ export const useSimulateFactoryUpdatePlatformFee =
 /**
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link factoryAbi}__ and `functionName` set to `"withdraw"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useSimulateFactoryWithdraw =
   /*#__PURE__*/ createUseSimulateContract({
@@ -2361,8 +2348,7 @@ export const useSimulateFactoryWithdraw =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryEvent = /*#__PURE__*/ createUseWatchContractEvent({
   abi: factoryAbi,
@@ -2372,8 +2358,7 @@ export const useWatchFactoryEvent = /*#__PURE__*/ createUseWatchContractEvent({
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"Buy"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryBuyEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2385,8 +2370,7 @@ export const useWatchFactoryBuyEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"ContractCreated"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryContractCreatedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2398,8 +2382,7 @@ export const useWatchFactoryContractCreatedEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"FeeUpdated"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryFeeUpdatedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2411,8 +2394,7 @@ export const useWatchFactoryFeeUpdatedEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"FundsDeposited"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryFundsDepositedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2424,8 +2406,7 @@ export const useWatchFactoryFundsDepositedEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"SaleClosed"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactorySaleClosedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2437,8 +2418,7 @@ export const useWatchFactorySaleClosedEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"StageUpdated"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryStageUpdatedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2450,8 +2430,7 @@ export const useWatchFactoryStageUpdatedEvent =
 /**
  * Wraps __{@link useWatchContractEvent}__ with `abi` set to __{@link factoryAbi}__ and `eventName` set to `"TokensDeposited"`
  *
- * -
- * - [__View Contract on Sepolia Etherscan__](https://sepolia.etherscan.io/address/0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+ *
  */
 export const useWatchFactoryTokensDepositedEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
@@ -2774,6 +2753,15 @@ export const useReadIFactoryGetCost = /*#__PURE__*/ createUseReadContract({
   abi: iFactoryAbi,
   functionName: 'getCost',
 })
+
+/**
+ * Wraps __{@link useReadContract}__ with `abi` set to __{@link iFactoryAbi}__ and `functionName` set to `"getPredictedPrice"`
+ */
+export const useReadIFactoryGetPredictedPrice =
+  /*#__PURE__*/ createUseReadContract({
+    abi: iFactoryAbi,
+    functionName: 'getPredictedPrice',
+  })
 
 /**
  * Wraps __{@link useReadContract}__ with `abi` set to __{@link iFactoryAbi}__ and `functionName` set to `"getTokenForSale"`
