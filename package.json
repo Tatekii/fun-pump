@@ -23,12 +23,17 @@
     "verify:local": "bun --cwd packages/smart-contract verify:local",
     "typecheck": "bun workspaces run typecheck",
     "clean": "rm -rf node_modules packages/*/node_modules .next packages/web/.next packages/smart-contract/.hardhat/cache",
-    "format": "bun prettier --write ."
+    "format": "bun prettier --write .",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "publish": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.4",
+    "@inquirer/prompts": "^7.5.3",
+    "@types/bun": "latest",
     "dotenv": "^16.5.0",
-    "typescript": "^5.8.3",
-    "@types/bun": "latest"
+    "typescript": "^5.8.3"
   },
   "module": "index.ts",
   "type": "module"
