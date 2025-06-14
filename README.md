@@ -4,19 +4,17 @@ A decentralized crowdfunding platform using smart contracts and modern web techn
 
 ## Technology Stack & Tools
 
-- Solidity (Writing Smart Contracts & Tests)
-- TypeScript (Development & Testing)
-- [Hardhat](https://hardhat.org/) (Development Framework)
-- [Hardhat Ignition](https://hardhat.org/ignition/docs/getting-started) (Deployment Management)
-- [Bun](https://bun.sh/) (Runtime & Package Manager)
-- [Next.js](https://nextjs.org/) (Frontend Framework)
-- [Wagmi](https://wagmi.sh/) (React Hooks for Ethereum)
-- [Pinata](https://www.pinata.cloud/) (IPFS Storage)
-- [TanStack Query](https://tanstack.com/query/latest) (Data Fetching & Caching)
-- [Shadcn/ui](https://ui.shadcn.com/) (UI Components)
-- [Tailwind CSS](https://tailwindcss.com/) (Styling)
-- [React Hook Form](https://react-hook-form.com/) (Form Handling)
-- [Zod](https://zod.dev/) (Schema Validation)
+- **Smart Contracts**: Solidity (Writing Smart Contracts & Tests)
+- **Development Framework**: [Hardhat](https://hardhat.org/) with [Hardhat Ignition](https://hardhat.org/ignition/docs/getting-started) (Deployment Management)
+- **Runtime & Package Manager**: [Bun](https://bun.sh/) (Fast JavaScript Runtime)
+- **Frontend Framework**: [Next.js 15](https://nextjs.org/) (React Framework)
+- **Blockchain Integration**: [Wagmi v2](https://wagmi.sh/) (React Hooks for Ethereum) + [RainbowKit](https://www.rainbowkit.com/) (Wallet Connection)
+- **State Management**: [Jotai](https://jotai.org/) (Atomic State Management) + [TanStack Query](https://tanstack.com/query/latest) (Data Fetching & Caching)
+- **File Storage**: [Pinata](https://www.pinata.cloud/) (IPFS Storage)
+- **UI Components**: [Shadcn/ui](https://ui.shadcn.com/) (Modern UI Components)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-First CSS)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (Schema Validation)
+- **Language**: TypeScript (Type Safety)
 
 ## Requirements For Initial Setup
 
@@ -24,19 +22,34 @@ A decentralized crowdfunding platform using smart contracts and modern web techn
 
 ## Project Structure
 
+This is a monorepo structure with the following packages:
+
 ```
-├── app/                    # Next.js frontend application
-│   ├── components/         # React components
-│   ├── hooks/             # Custom React hooks
-│   └── generated.ts       # Auto-generated contract types
-├── contracts/             # Solidity smart contracts
-│   ├── Factory.sol        # Main factory contract
-│   ├── Token.sol          # Token contract
-│   ├── libraries/         # Contract libraries
-│   └── interfaces/        # Contract interfaces
-├── ignition/              # Hardhat Ignition deployment
-│   └── modules/           # Deployment modules
-└── test/                  # Contract tests
+fun-pump/
+├── packages/
+│   ├── smart-contract/         # Solidity smart contracts package
+│   │   ├── contracts/          # Smart contract source files
+│   │   │   ├── Factory.sol     # Main factory contract
+│   │   │   ├── Token.sol       # Token implementation
+│   │   │   ├── interfaces/     # Contract interfaces
+│   │   │   └── libraries/      # Reusable libraries
+│   │   ├── src/                # TypeScript source (exported)
+│   │   │   ├── types/          # TypeScript type definitions
+│   │   │   ├── generated.ts    # Wagmi-generated hooks
+│   │   │   └── index.ts        # Package entry point
+│   │   ├── dist/               # Built TypeScript files
+│   │   ├── test/               # Contract tests
+│   │   ├── ignition/           # Hardhat Ignition deployment
+│   │   └── artifacts/          # Compiled contract artifacts
+│   └── web/                    # Next.js frontend application
+│       ├── app/                # Next.js app directory
+│       ├── components/         # React components
+│       ├── hooks/              # Custom React hooks
+│       ├── stores/             # Jotai state stores
+│       ├── lib/                # Utility functions
+│       └── providers/          # React context providers
+├── scripts/                    # Development scripts
+└── README.md                   # This file
 ```
 
 ## Setting Up
@@ -49,72 +62,139 @@ cd fun-pump
 
 ### 2. Install Dependencies
 ```bash
+# Install all dependencies for the monorepo
 bun install
 ```
 
-### 3. Compile Contracts
+### 3. Build Smart Contract Package
 ```bash
-bun hardhat compile
+# Compile contracts and build TypeScript package
+bun compile
 ```
 
-### 4. Start Local Node
+### 4. Start Local Blockchain Node
 ```bash
-bun hardhat node
+# Start Hardhat local node
+bun node
 ```
 
 ### 5. Deploy Contracts
 In a separate terminal, run:
 ```bash
 # For local development
-bun hardhat ignition deploy ignition/modules/deploy.js --network localhost
+bun deploy:local
 
-# For deployment with reset
-bun hardhat ignition deploy ignition/modules/deploy.js --network localhost --reset
+# For deployment with reset (clean slate)
+bun deploy:local:reset
 ```
 
-### 6. Generate Contract Types
+### 6. Generate Contract Bindings
 After deployment, generate the TypeScript bindings:
 ```bash
-bun wagmi generate
+# Generate Wagmi hooks and TypeScript types
+bun --cwd packages/smart-contract build:wagmi
 ```
 
-### 7. Start Frontend
+### 7. Start Frontend Development Server
 ```bash
+# Start Next.js development server
 bun dev
+```
+
+### 8. Full Development Environment
+To start all services with file watching:
+```bash
+# Start blockchain node + contract watcher + frontend
+bun dev:full
 ```
 
 ## Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+Create a `.env.local` file in the `packages/web` directory with the following variables:
 
 ```bash
 # Pinata IPFS
 PINATA_API_KEY=your_pinata_api_key
-NEXT_PUBLIC_GATEWAY_URL=your_pinata_secret_key
+NEXT_PUBLIC_GATEWAY_URL=your_pinata_gateway_url
 
 # Add other environment variables as needed
 ```
 
 Note: Never commit your `.env.local` file to version control.
 
-## Testing
-
-Run the test suite:
-```bash
-bunx hardhat test --tsconfig ./tsconfig.hardhat.json
-```
-
-## Contract Deployment Addresses
-
-The project uses Hardhat Ignition for deployment management. Deployment artifacts are stored in:
-- Local network (Hardhat): `ignition/deployments/chain-31337/`
-- Sepolia testnet: `ignition/deployments/chain-11155111/`
-
 ## Available Scripts
 
-- `bun dev` - Start the Next.js development server
-- `bun build` - Build the frontend for production
-- `bun start` - Start the production server
-- `bun test` - Run contract tests
-- `bun compile` - Compile smart contracts
-- `bun deploy` - Deploy contracts using Ignition
+### Root-level Scripts
+
+```bash
+# Start the Next.js development server
+bun dev
+
+# Build the frontend for production
+bun build
+
+# Start the production server
+bun start
+
+# Run contract tests
+bun test
+
+# Compile smart contracts
+bun compile
+
+# Deploy contracts (requires configured network)
+bun deploy
+
+# Deploy contracts to local network
+bun deploy:local
+
+# Start local Hardhat node
+bun node
+
+# Run type checking
+bun typecheck
+
+# Watch contracts and rebuild on changes
+bun dev:contracts
+
+# Start complete development environment
+bun dev:full
+
+# Clean the project
+bun clean
+
+# Format code
+bun format
+```
+
+### Smart Contract Scripts
+
+```bash
+# Compile Solidity contracts
+bun --cwd packages/smart-contract compile
+
+# Run contract tests
+bun --cwd packages/smart-contract test
+
+# Deploy contracts using Hardhat Ignition
+bun --cwd packages/smart-contract deploy
+
+# Generate TypeScript bindings using Wagmi
+bun --cwd packages/smart-contract build:wagmi
+
+# Build the entire package (compile + generate + copy)
+bun --cwd packages/smart-contract build
+```
+
+### Web App Scripts
+
+```bash
+# Start development server
+bun --cwd packages/web dev
+
+# Build for production
+bun --cwd packages/web build
+
+# Start production server
+bun --cwd packages/web start
+```

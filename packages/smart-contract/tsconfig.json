@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@contracts/*": ["./contracts/*"],
+      "@artifacts/*": ["./artifacts/contracts/*"],
+      "@typechain/*": ["./typechain-types/*"]
+    },
+    "types": ["mocha", "chai", "node"]
+  },
+  "include": [
+    "./test/**/*.ts",
+    "./typechain-types/**/*.ts",
+    "./scripts/**/*.ts",
+    "./ignition/**/*.js",
+    "./ignition/**/*.ts",
+    "hardhat.config.js"
+  ]
+}
