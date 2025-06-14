@@ -1,4 +1,4 @@
-import { pinata } from "@/lib/pinata.utils"
+import { pinata } from "@/lib/pinata"
 import { NextResponse, type NextRequest } from "next/server"
 
 

@@ -1,8 +1,7 @@
 import { parseEther } from "viem"
 import { useWaitForTransactionReceipt } from "wagmi"
 import { useState } from "react"
-import type { TokenSale, TokenData } from "@/types/token.type"
-import { CurveType } from "@fun-pump/smart-contract"
+import { CurveType,TokenSale } from "@fun-pump/smart-contract"
 import {
 	useReadFactoryTokenForSale,
 	useWatchFactoryContractCreatedEvent,

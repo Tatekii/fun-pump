@@ -481,7 +481,7 @@ export const factoryAbi = [
       { name: '_symbol', internalType: 'string', type: 'string' },
       { name: '_startTime', internalType: 'uint256', type: 'uint256' },
       { name: '_endTime', internalType: 'uint256', type: 'uint256' },
-      { name: '_imageHash', internalType: 'string', type: 'string' },
+      { name: '_signedUrl', internalType: 'string', type: 'string' },
       { name: '_curveType', internalType: 'uint8', type: 'uint8' },
       { name: '_curveSlope', internalType: 'uint256', type: 'uint256' },
     ],
@@ -1442,6 +1442,9 @@ export const iFactoryAbi = [
 // Token
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+
+*/
 export const tokenAbi = [
   {
     type: 'constructor',
@@ -1622,6 +1625,16 @@ export const tokenAbi = [
     stateMutability: 'nonpayable',
   },
 ] as const
+
+/**
+
+*/
+export const tokenAddress = {} as const
+
+/**
+
+*/
+export const tokenConfig = { address: tokenAddress, abi: tokenAbi } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // React
@@ -3096,6 +3109,7 @@ export const useWatchIFactoryTokensDepositedEvent =
  */
 export const useReadToken = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
 })
 
 /**
@@ -3103,6 +3117,7 @@ export const useReadToken = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenAllowance = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'allowance',
 })
 
@@ -3111,6 +3126,7 @@ export const useReadTokenAllowance = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenBalanceOf = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'balanceOf',
 })
 
@@ -3119,6 +3135,7 @@ export const useReadTokenBalanceOf = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenCreator = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'creator',
 })
 
@@ -3127,6 +3144,7 @@ export const useReadTokenCreator = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenDecimals = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'decimals',
 })
 
@@ -3135,6 +3153,7 @@ export const useReadTokenDecimals = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenName = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'name',
 })
 
@@ -3143,6 +3162,7 @@ export const useReadTokenName = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenOwner = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'owner',
 })
 
@@ -3151,6 +3171,7 @@ export const useReadTokenOwner = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenSymbol = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'symbol',
 })
 
@@ -3159,6 +3180,7 @@ export const useReadTokenSymbol = /*#__PURE__*/ createUseReadContract({
  */
 export const useReadTokenTotalSupply = /*#__PURE__*/ createUseReadContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'totalSupply',
 })
 
@@ -3167,6 +3189,7 @@ export const useReadTokenTotalSupply = /*#__PURE__*/ createUseReadContract({
  */
 export const useWriteToken = /*#__PURE__*/ createUseWriteContract({
   abi: tokenAbi,
+  address: tokenAddress,
 })
 
 /**
@@ -3174,6 +3197,7 @@ export const useWriteToken = /*#__PURE__*/ createUseWriteContract({
  */
 export const useWriteTokenApprove = /*#__PURE__*/ createUseWriteContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'approve',
 })
 
@@ -3182,6 +3206,7 @@ export const useWriteTokenApprove = /*#__PURE__*/ createUseWriteContract({
  */
 export const useWriteTokenTransfer = /*#__PURE__*/ createUseWriteContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'transfer',
 })
 
@@ -3190,6 +3215,7 @@ export const useWriteTokenTransfer = /*#__PURE__*/ createUseWriteContract({
  */
 export const useWriteTokenTransferFrom = /*#__PURE__*/ createUseWriteContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'transferFrom',
 })
 
@@ -3198,6 +3224,7 @@ export const useWriteTokenTransferFrom = /*#__PURE__*/ createUseWriteContract({
  */
 export const useSimulateToken = /*#__PURE__*/ createUseSimulateContract({
   abi: tokenAbi,
+  address: tokenAddress,
 })
 
 /**
@@ -3205,6 +3232,7 @@ export const useSimulateToken = /*#__PURE__*/ createUseSimulateContract({
  */
 export const useSimulateTokenApprove = /*#__PURE__*/ createUseSimulateContract({
   abi: tokenAbi,
+  address: tokenAddress,
   functionName: 'approve',
 })
 
@@ -3212,7 +3240,7 @@ export const useSimulateTokenApprove = /*#__PURE__*/ createUseSimulateContract({
  * Wraps __{@link useSimulateContract}__ with `abi` set to __{@link tokenAbi}__ and `functionName` set to `"transfer"`
  */
 export const useSimulateTokenTransfer = /*#__PURE__*/ createUseSimulateContract(
-  { abi: tokenAbi, functionName: 'transfer' },
+  { abi: tokenAbi, address: tokenAddress, functionName: 'transfer' },
 )
 
 /**
@@ -3221,6 +3249,7 @@ export const useSimulateTokenTransfer = /*#__PURE__*/ createUseSimulateContract(
 export const useSimulateTokenTransferFrom =
   /*#__PURE__*/ createUseSimulateContract({
     abi: tokenAbi,
+    address: tokenAddress,
     functionName: 'transferFrom',
   })
 
@@ -3229,6 +3258,7 @@ export const useSimulateTokenTransferFrom =
  */
 export const useWatchTokenEvent = /*#__PURE__*/ createUseWatchContractEvent({
   abi: tokenAbi,
+  address: tokenAddress,
 })
 
 /**
@@ -3237,6 +3267,7 @@ export const useWatchTokenEvent = /*#__PURE__*/ createUseWatchContractEvent({
 export const useWatchTokenApprovalEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
     abi: tokenAbi,
+    address: tokenAddress,
     eventName: 'Approval',
   })
 
@@ -3246,5 +3277,6 @@ export const useWatchTokenApprovalEvent =
 export const useWatchTokenTransferEvent =
   /*#__PURE__*/ createUseWatchContractEvent({
     abi: tokenAbi,
+    address: tokenAddress,
     eventName: 'Transfer',
   })

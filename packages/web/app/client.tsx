@@ -8,9 +8,8 @@ import CreateTokenModal from "@/components/create-token-modal"
 import TokenCard from "@/components/token-card"
 import TradeModal from "@/components/trade-modal"
 import { TokenFilterComponent } from "@/components/token-filter"
-import { useReadFactoryFee } from "@/generated"
-import { TokenData } from "@/types/token.type"
 import { flatTokensAtom, tokensQueryAtom } from "@/stores/tokens.atom"
+import { TokenSale, useReadFactoryFee } from "@fun-pump/smart-contract"
 
 export default function HomePageClient() {
 	const { address: account } = useAccount()
@@ -24,7 +23,7 @@ export default function HomePageClient() {
 
 	const [showCreate, setShowCreate] = useState(false)
 	const [showTrade, setShowTrade] = useState(false)
-	const [selectedToken, setSelectedToken] = useState<TokenData | null>(null)
+	const [selectedToken, setSelectedToken] = useState<TokenSale | null>(null)
 
 	function handleClickCreate() {
 		account && toggleCreate()
@@ -34,7 +33,7 @@ export default function HomePageClient() {
 		setShowCreate(!showCreate)
 	}
 
-	function toggleTrade(token: TokenData | null) {
+	function toggleTrade(token: TokenSale | null) {
 		setSelectedToken(token)
 		setShowTrade(!showTrade)
 	}

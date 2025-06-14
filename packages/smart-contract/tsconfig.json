@@ -21,6 +21,6 @@
     "./scripts/**/*.ts",
     "./ignition/**/*.js",
     "./ignition/**/*.ts",
-    "hardhat.config.ts"
+    "hardhat.config.js"
   ]
 }

@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { formatEther } from "viem"
-import { CurveType, TokenData } from "@/types/token.type"
+import { CurveType, TokenSale } from "@fun-pump/smart-contract"
 import TiltedCard from "@/components/tilted-card"
 
 // 助手函数：获取曲线类型名称
@@ -25,8 +25,8 @@ const formatSlope = (slope: bigint): string => {
 };
 
 interface TokenProps {
-	toggleTrade: (token: TokenData) => void
-	token: TokenData
+	toggleTrade: (token: TokenSale) => void
+	token: TokenSale
 }
 
 const TokenCard: FC<TokenProps> = ({ toggleTrade, token, ...rest }) => {

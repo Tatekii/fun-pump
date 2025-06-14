@@ -21,6 +21,9 @@ module.exports = {
 		sources: "./contracts",
 		tests: "./test",
 		cache: "./cache",
-		artifacts: "./dist/artifacts",
+		artifacts: "./artifacts",
+	},
+	sourcify: {
+		enabled: true,
 	},
 }

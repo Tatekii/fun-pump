@@ -1,13 +1,12 @@
 import { FC } from "react"
-import { TokenData } from "@/types/token.type"
-import { useTokenSale, useBuyToken } from "@/hooks/use-contract"
-import { useReadContract } from "wagmi"
+import { useBuyToken } from "@/hooks/use-contract"
 import { formatEther } from "viem"
 import {
+	TokenSale,
 	useReadCrowdfundingLibFundingLimit,
 	useReadCrowdfundingLibFundingTarget,
 	useReadFactoryGetCost,
-} from "@/generated"
+} from "@fun-pump/smart-contract"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -15,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { ResponsiveModal, ResponsiveModalProps } from "./responsive-modal"
 import { getCurveTypeName } from "./token-card"
-import { calculateTimeProgress, calculateFundingProgress, formatTimeRemaining } from "../lib/token.utils"
+import { calculateTimeProgress, calculateFundingProgress, formatTimeRemaining } from "../utils/token.utils"
 
 // 助手函数：格式化斜率显示
 const formatSlope = (slope: bigint): string => {
@@ -26,7 +25,7 @@ const formatSlope = (slope: bigint): string => {
 
 interface ITradeModalProps extends Pick<ResponsiveModalProps, "open"> {
 	toggleTrade: () => void
-	token: TokenData
+	token: TokenSale
 }
 
 const TradeModal: FC<ITradeModalProps> = ({ toggleTrade, token, open }) => {

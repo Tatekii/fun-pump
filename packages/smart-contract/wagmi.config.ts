@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 
 // 获取部署地址的工具函数
-function getDeployedAddress(contractName: string, chainId: number): `0x${string}` | undefined {
+function getDeployedAddress(contractName: string, chainId: number): `0x${string}` {
   const deploymentPath = join(
     __dirname,
     "ignition/deployments",
@@ -22,11 +22,11 @@ function getDeployedAddress(contractName: string, chainId: number): `0x${string}
   }
   console.warn(`Could not find ${contractName} deployment for chain ${chainId} at ${deploymentPath}`);
 
-  return undefined;
+  return `0x`;
 }
 
 export default defineConfig({
-  out: "dist/generated.ts", // 输出到dist目录，便于包含在发布包中
+  out: "src/generated.ts", 
   
   plugins: [
     hardhat({
@@ -45,10 +45,6 @@ export default defineConfig({
         },
       },
     }),
-    react({
-      useContractRead: true,
-      useContractWrite: true,
-      useContractEvent: true,
-    }),
+    react(),
   ],
 });

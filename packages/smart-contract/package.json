@@ -3,10 +3,11 @@
 	"version": "0.1.0",
 	"private": false,
 	"description": "Smart contracts for Fun Pump - Crowdfunding platform",
-	"main": "dist/index.js",
-	"types": "dist/types/index.d.ts",
+	"main": "dist/index.ts",
+	"types": "dist/index.ts",
 	"files": [
-		"dist"
+		"dist",
+		"artifacts/contracts/**/*.json"
 	],
 	"scripts": {
 		"compile": "bun hardhat compile",
@@ -19,11 +20,10 @@
 		"verify:local": "bun hardhat verify --network localhost",
 		"typecheck": "bun tsc --noEmit",
 		"build:wagmi": "bun wagmi generate",
-		"build:types": "bun tsc -p tsconfig.build.json",
-		"build": "bun run clear:dist && bun run compile && bun run build:wagmi && bun run build:types",
+		"build:copy": "cp -r src/* dist/",
+		"build": "bun run clear:dist && bun run compile && bun run build:wagmi && bun run build:copy",
 		"prepublishOnly": "bun run build",
 		"update-address": "bun run scripts/update-address.js",
-		"tsc": "bun tsc -p tsconfig.build.json",
 		"clear:dist": "rm -rf ./dist && mkdir -p ./dist"
 	},
 	"dependencies": {

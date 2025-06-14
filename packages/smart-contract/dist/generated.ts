@@ -481,7 +481,7 @@ export const factoryAbi = [
       { name: '_symbol', internalType: 'string', type: 'string' },
       { name: '_startTime', internalType: 'uint256', type: 'uint256' },
       { name: '_endTime', internalType: 'uint256', type: 'uint256' },
-      { name: '_imageHash', internalType: 'string', type: 'string' },
+      { name: '_signedUrl', internalType: 'string', type: 'string' },
       { name: '_curveType', internalType: 'uint8', type: 'uint8' },
       { name: '_curveSlope', internalType: 'uint256', type: 'uint256' },
     ],

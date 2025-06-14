@@ -116,7 +116,7 @@ contract Factory is IFactory {
         string memory _symbol,
         uint256 _startTime,
         uint256 _endTime,
-        string memory _imageHash,
+        string memory _signedUrl,
         uint8 _curveType,
         uint256 _curveSlope
     ) public payable override whenNotPaused {
@@ -146,7 +146,7 @@ contract Factory is IFactory {
             startTime: _startTime,
             endTime: _endTime,
             stage: SaleStage.OPENING,
-            signedUrl: _imageHash,
+            signedUrl: _signedUrl,
             curveType: _curveType,
             curveSlope: _curveSlope
         });
