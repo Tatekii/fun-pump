@@ -1,6 +1,6 @@
 {
 	"name": "@fun-pump/smart-contract",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"private": false,
 	"description": "Smart contracts for Fun Pump - Crowdfunding platform",
 	"main": "dist/index.ts",
