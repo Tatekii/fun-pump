@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react"
 import { formatEther } from "viem"
-import { useCreateToken } from "@/hooks/use-contract"
+import { useCreateToken } from "@/hooks/use-create-token"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -102,55 +102,40 @@ const formDefaultValue = {
 
 const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCreate }) => {
 	const client = useQueryClient()
-	
+
 	const [preview, setPreview] = useState<string>("")
 	const [isSubmitting, setIsSubmitting] = useState(false)
-	
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: formDefaultValue,
 	})
-	
+
 	const {
 		createToken,
-		isPending, // 钱包交互
-		isConfirming, // 交易正在确认
-		isSuccess, // 交易已确认
-		isError, // 交易失败
-		error, // 错误详情
+		isSigningTransaction,
+		isTransactionSubmitted,
+		isWriteError,
+		writeError,
 		txHash,
-		receipt,
-		newTokenAddress,
-		transactionStatus,
-		reset,
+		pendingTransactions,
+		completedTokens,
+		reset: resetCreateToken,
 	} = useCreateToken()
 
-	// 使用useEffect监听交易状态变化
+	// 交易提交成功后200ms关闭弹窗
 	useEffect(() => {
-		if (isSuccess && receipt && newTokenAddress) {
-			// 交易成功确认后的操作
-			form.reset(formDefaultValue)
-			setPreview("")
-			
-			// 等待一小段时间后关闭模态框，让用户看到成功状态
-			const timer = setTimeout(() => {
-				toggleCreate()
-				client.invalidateQueries({ queryKey: ["tokens"] })
-			}, 2000)
-			
-			return () => clearTimeout(timer)
+		if (isTransactionSubmitted) {
+			handleClose()
 		}
-	}, [isSuccess, receipt, newTokenAddress, client, form, toggleCreate])
+	}, [isTransactionSubmitted])
 
-	console.log({
-		isPending,
-		isConfirming,
-		isSuccess,
-		isError,
-		transactionStatus,
-		txHash,
-		newTokenAddress
-	})
+	// 新token完成后刷新列表
+	useEffect(() => {
+		if (completedTokens.length > 0) {
+			client.invalidateQueries({ queryKey: ["tokens"] })
+		}
+	}, [completedTokens, client])
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		try {
@@ -161,33 +146,33 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			// Upload image first
 			const data = new FormData()
 			data.set("file", values.image)
-			const uploadRequest = await fetch("/api/files", {
-				method: "POST",
-				body: data,
-			})
-			
-			if (!uploadRequest.ok) {
-				throw new Error("Failed to upload image")
-			}
-			
-			const signedUrl = await uploadRequest.json()
+
+			// FIXME
+			// const uploadRequest = await fetch("/api/files", {
+			// 	method: "POST",
+			// 	body: data,
+			// })
+
+			// if (!uploadRequest.ok) {
+			// 	throw new Error("Failed to upload image")
+			// }
+
+			// const signedUrl = await uploadRequest.json()
 
 			// 将斜率转换为合适的单位
 			const curveSlope = BigInt(Math.floor(Number(values.curveSlope) * 1e18))
 
 			// 发送交易到区块链
-			await createToken(
+			createToken(
 				values.name,
 				values.symbol,
 				startTimestamp,
 				endTimestamp,
-				signedUrl,
+				"debugurl",
 				values.curveType,
 				curveSlope,
 				fee
 			)
-			
-			// 注意：我们不在这里处理交易成功，而是在useEffect中监听isSuccess
 		} catch (error) {
 			console.error("Error in form submission:", error)
 			toast.error(error instanceof Error ? error.message : "An unknown error occurred")
@@ -196,17 +181,8 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 		}
 	}
 
-	// 根据交易状态更新按钮文本
-	const getButtonText = () => {
-		if (isPending) return "Waiting for wallet confirmation..."
-		if (isConfirming) return "Creating token on blockchain..."
-		if (isSuccess) return "Token created successfully!"
-		if (isError) return "Failed to create token"
-		return "Create Token"
-	}
-
 	const handleClose = () => {
-		reset() // 重置交易状态
+		resetCreateToken() // 重置交易状态
 		form.reset(formDefaultValue)
 		setPreview("")
 		toggleCreate()
@@ -492,41 +468,26 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 							variant="ghost"
 							className={cn(
 								"text-2xl hover:scale-110 transition-transform",
-								isSuccess && "text-green-500",
-								isError && "text-red-500"
+								isWriteError && "text-red-500",
+								isSigningTransaction && "animate-pulse"
 							)}
-							disabled={isPending || isSubmitting || isConfirming}
+							disabled={isSubmitting || isSigningTransaction}
 						>
-							[ {getButtonText()} ]
-							{isConfirming && (
-								<span className="ml-2 inline-block animate-pulse">⏳</span>
-							)}
-							{isSuccess && (
-								<span className="ml-2 inline-block">✅</span>
-							)}
+							{isSigningTransaction ? "Signing Transaction..." : "Create Token"}
 						</Button>
 						<Button
 							type="button"
 							variant="ghost"
 							onClick={handleClose}
-							disabled={isSubmitting || isConfirming}
+							disabled={isSubmitting || isSigningTransaction}
 							className="text-2xl hover:scale-110 transition-transform"
 						>
 							[ cancel ]
 						</Button>
-						
-						{/* 显示交易哈希链接 */}
-						{txHash && (
-							<div className="text-center mt-2">
-								<a 
-									href={`https://etherscan.io/tx/${txHash}`}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="text-sm text-blue-500 hover:underline"
-								>
-									View transaction on Etherscan
-								</a>
-							</div>
+
+						{/* 错误信息显示 */}
+						{isWriteError && writeError && (
+							<div className="text-red-500 text-sm text-center">{writeError.message}</div>
 						)}
 					</div>
 				</form>

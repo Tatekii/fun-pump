@@ -1,40 +1,39 @@
 {
-  "name": "fun-pump-monorepo",
-  "version": "0.1.0",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "bun --cwd packages/web dev",
-    "build": "bun --cwd packages/web build",
-    "start": "bun --cwd packages/web start",
-    "lint": "bun --cwd packages/web lint",
-    "compile": "bun --cwd packages/smart-contract compile",
-    "test": "bun --cwd packages/smart-contract test",
-    "deploy": "bun --cwd packages/smart-contract deploy",
-    "deploy:local": "bun --cwd packages/smart-contract deploy:local",
-    "deploy:local:reset": "bun --cwd packages/smart-contract deploy:local:reset",
-    "node": "bun --cwd packages/smart-contract node",
-    "generate": "bun --cwd packages/web generate",
-    "dev:contracts": "bun scripts/watch-contracts.ts",
-    "dev:full": "bun run dev:contracts & bun run node & bun run dev",
-    "verify": "bun --cwd packages/smart-contract verify",
-    "verify:local": "bun --cwd packages/smart-contract verify:local",
-    "typecheck": "bun workspaces run typecheck",
-    "clean": "rm -rf node_modules packages/*/node_modules .next packages/web/.next packages/smart-contract/.hardhat/cache",
-    "format": "bun prettier --write .",
-    "changeset": "changeset",
-    "version": "changeset version",
-    "publish": "changeset publish"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.29.4",
-    "@inquirer/prompts": "^7.5.3",
-    "@types/bun": "latest",
-    "dotenv": "^16.5.0",
-    "typescript": "^5.8.3"
-  },
-  "module": "index.ts",
-  "type": "module"
+	"name": "fun-pump-monorepo",
+	"version": "0.1.0",
+	"private": true,
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"dev:web": "bun --cwd packages/web dev",
+		"dev:node": "bun --cwd packages/smart-contract node",
+		"dev:contract": "bun build:contract",
+		"build": "bun --cwd packages/web build",
+		"start": "bun --cwd packages/web start",
+		"lint": "bun --cwd packages/web lint",
+		"compile": "bun --cwd packages/smart-contract compile",
+		"test": "bun --cwd packages/smart-contract test",
+		"deploy": "bun --cwd packages/smart-contract deploy",
+		"deploy:local": "bun --cwd packages/smart-contract deploy:local",
+		"deploy:local:reset": "bun --cwd packages/smart-contract deploy:local:reset",
+		"build:contract": "bun --cwd packages/smart-contract build",
+		"verify": "bun --cwd packages/smart-contract verify",
+		"verify:local": "bun --cwd packages/smart-contract verify:local",
+		"typecheck": "bun workspaces run typecheck",
+		"clean": "rm -rf node_modules packages/*/node_modules .next packages/web/.next packages/smart-contract/.hardhat/cache",
+		"format": "bun prettier --write .",
+		"changeset": "changeset",
+		"version": "changeset version",
+		"publish": "changeset publish"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.29.4",
+		"@inquirer/prompts": "^7.5.3",
+		"@types/bun": "latest",
+		"dotenv": "^16.5.0",
+		"typescript": "^5.8.3"
+	},
+	"module": "index.ts",
+	"type": "module"
 }
