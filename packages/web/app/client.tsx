@@ -1,17 +1,18 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { useAccount } from "wagmi"
-import { useAtomValue } from "jotai"
+import { useAtomValue, useSetAtom } from "jotai"
 import { Button } from "@/components/ui/button"
 import CreateTokenModal from "@/components/create-token-modal"
 import TokenCard from "@/components/token-card"
-import TradeModal from "@/components/trade-modal"
 import { TokenFilterComponent } from "@/components/token-filter"
 import { flatTokensAtom, tokensQueryAtom } from "@/stores/tokens.atom"
 import { TokenSale, useReadFactoryFee } from "@fun-pump/smart-contract"
 
 export default function HomePageClient() {
+	const router = useRouter()
 	const { address: account } = useAccount()
 	const { data: fee = BigInt(0) } = useReadFactoryFee()
 
@@ -22,8 +23,6 @@ export default function HomePageClient() {
 		useAtomValue(tokensQueryAtom)
 
 	const [showCreate, setShowCreate] = useState(false)
-	const [showTrade, setShowTrade] = useState(false)
-	const [selectedToken, setSelectedToken] = useState<TokenSale | null>(null)
 
 	function handleClickCreate() {
 		account && toggleCreate()
@@ -33,9 +32,8 @@ export default function HomePageClient() {
 		setShowCreate(!showCreate)
 	}
 
-	function toggleTrade(token: TokenSale | null) {
-		setSelectedToken(token)
-		setShowTrade(!showTrade)
+	function handleTrade(token: TokenSale) {
+		router.push(`/trade/${token.token}`)
 	}
 
 	return (
@@ -59,7 +57,7 @@ export default function HomePageClient() {
 
 					<div className="grid grid-cols-[repeat(auto-fill,minmax(200px,0fr))] gap-8 place-content-center text-center m-4">
 						{tokens.map((_token) => (
-							<TokenCard toggleTrade={toggleTrade} token={_token} key={_token.token} />
+							<TokenCard toggleTrade={handleTrade} token={_token} key={_token.token} />
 						))}
 					</div>
 				</div>
@@ -80,10 +78,6 @@ export default function HomePageClient() {
 			</div>
 
 			<CreateTokenModal toggleCreate={toggleCreate} fee={fee} showCreate={showCreate} />
-
-			{selectedToken && (
-				<TradeModal open={showTrade} toggleTrade={() => toggleTrade(null)} token={selectedToken} />
-			)}
 		</main>
 	)
 }

@@ -2,6 +2,7 @@ import { FC } from "react"
 import { formatEther } from "viem"
 import { CurveType, TokenSale } from "@fun-pump/smart-contract"
 import TiltedCard from "@/components/tilted-card"
+import { formatSlope } from "@/utils/token.utils";
 
 // 助手函数：获取曲线类型名称
 export const getCurveTypeName = (curveType: CurveType): string => {
@@ -15,13 +16,6 @@ export const getCurveTypeName = (curveType: CurveType): string => {
     default:
       return "Unknown";
   }
-};
-
-// 助手函数：格式化斜率显示
-const formatSlope = (slope: bigint): string => {
-  // 将BigInt转换为可读格式，考虑到1e18的缩放
-  const slopeNumber = Number(slope) / 1e18;
-  return slopeNumber.toFixed(6);
 };
 
 interface TokenProps {

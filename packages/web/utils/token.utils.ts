@@ -33,4 +33,10 @@ export const formatTimeRemaining = (endTime: bigint): string => {
 	if (days > 0) return `${days}d ${hours}h remaining`
 	if (hours > 0) return `${hours}h ${minutes}m remaining`
 	return `${minutes}m remaining`
-}
+}// 助手函数：格式化斜率显示
+export const formatSlope = (slope: bigint): string => {
+	// 将BigInt转换为可读格式，考虑到1e18的缩放
+	const slopeNumber = Number(slope) / 1e18;
+	return slopeNumber.toFixed(6);
+};
+

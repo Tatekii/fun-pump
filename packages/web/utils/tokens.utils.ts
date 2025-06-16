@@ -1,12 +1,19 @@
-import { TokenSale } from "@fun-pump/smart-contract";
+import { TokenSale } from "@fun-pump/smart-contract"
+
+/**
+ * 时间过滤器的选项
+ */
+export const timeFilterOptions = ["before" , "after" , "equals"] as const 
+export type TTimeFilter = typeof timeFilterOptions[number]
 
 
-function applyTimeFilter(time: number, timeFilter?: { type: "before" | "after" | "equals"; date: Date} ): boolean {
+
+function applyTimeFilter(time: number, timeFilter?: { type: TTimeFilter; date: Date }): boolean {
 	if (!timeFilter) return true
 	const timestamp = new Date(time * 1000)
 
 	if (timeFilter.type === "equals" && timestamp.getTime() !== timeFilter.date.getTime()) return false
-	if (timeFilter.type === "before" && timestamp >= timeFilter.date) return false
+	if (timeFilter.type === 'before' && timestamp >= timeFilter.date) return false
 	if (timeFilter.type === "after" && timestamp <= timeFilter.date) return false
 
 	return true

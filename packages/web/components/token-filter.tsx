@@ -14,18 +14,19 @@ import { CalendarIcon } from "lucide-react"
 import { cn } from "@/utils/tailwind.utils"
 import { format } from "date-fns"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { timeFilterOptions, TTimeFilter } from "@/utils/tokens.utils"
 
 const filterFormSchema = z.object({
 	name: z.string().optional(),
 	startTime: z
 		.object({
-			type: z.enum(["before", "after", "equals"]),
+			type: z.enum(timeFilterOptions),
 			date: z.date(),
 		})
 		.optional(),
 	endTime: z
 		.object({
-			type: z.enum(["before", "after", "equals"]),
+			type: z.enum(timeFilterOptions),
 			date: z.date(),
 		})
 		.optional(),
@@ -102,7 +103,7 @@ export function TokenFilterComponent() {
 										value={field.value?.type || "equals"}
 										onValueChange={(value) => {
 											field.onChange({
-												type: value as "before" | "after" | "equals",
+												type: value as TTimeFilter,
 												date: field.value?.date || new Date(),
 											})
 										}}
@@ -111,9 +112,11 @@ export function TokenFilterComponent() {
 											<SelectValue placeholder="Select comparison" />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="before">Before</SelectItem>
-											<SelectItem value="after">After</SelectItem>
-											<SelectItem value="equals">Equals</SelectItem>
+											{timeFilterOptions.map((op) => (
+												<SelectItem value={op} key={op}>
+													{op.toUpperCase()}
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 									<Popover>
@@ -167,7 +170,7 @@ export function TokenFilterComponent() {
 										value={field.value?.type || "equals"}
 										onValueChange={(value) => {
 											field.onChange({
-												type: value as "before" | "after" | "equals",
+												type: value as TTimeFilter,
 												date: field.value?.date || new Date(),
 											})
 										}}
@@ -176,9 +179,11 @@ export function TokenFilterComponent() {
 											<SelectValue placeholder="Select comparison" />
 										</SelectTrigger>
 										<SelectContent>
-											<SelectItem value="before">Before</SelectItem>
-											<SelectItem value="after">After</SelectItem>
-											<SelectItem value="equals">Equals</SelectItem>
+											{timeFilterOptions.map((op) => (
+												<SelectItem value={op} key={op}>
+													{op.toUpperCase()}
+												</SelectItem>
+											))}
 										</SelectContent>
 									</Select>
 									<Popover>
