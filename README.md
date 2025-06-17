@@ -2,6 +2,13 @@
 
 A decentralized crowdfunding platform using smart contracts and modern web technologies.
 
+<div style="display: flex; justify-content: space-between;">
+  <img src="example1.png" alt="Example 1" width="48%">
+  <img src="example2.png" alt="Example 2" width="48%">
+</div>
+
+
+
 ## Technology Stack & Tools
 
 - **Smart Contracts**: Solidity (Writing Smart Contracts & Tests)

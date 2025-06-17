@@ -512,7 +512,7 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 
 						{/* 错误信息显示 */}
 						{isWriteError && writeError && (
-							<div className="text-red-500 text-sm text-center">{writeError.message}</div>
+							<div className="text-red-500 text-sm text-center overflow-auto">{writeError.message}</div>
 						)}
 					</div>
 				</form>

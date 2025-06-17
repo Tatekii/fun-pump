@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FunctionComponent, useEffect, useRef, useCallback, useState } from "react"
-import { AreaSeries, ISeriesApi, createChart, ColorType, IChartApi } from "lightweight-charts"
+import { AreaSeries, ISeriesApi, CandlestickSeries, ColorType, IChartApi } from "lightweight-charts"
 import { TradingChart, TradingChartRef } from "@/components/trading-chart/trading-chart"
 import { useTheme } from "next-themes"
 import { useIsDarkMode } from "@/providers/theme-provider"
@@ -20,6 +20,73 @@ const TradeCharSectionSkeleton = (props: React.ComponentProps<"div">) => (
 		</CardContent>
 	</Card>
 )
+
+let randomFactor = 25 + Math.random() * 25
+const samplePoint = (i: number) =>
+	i *
+		(0.5 +
+			Math.sin(i / 1) * 0.2 +
+			Math.sin(i / 2) * 0.4 +
+			Math.sin(i / randomFactor) * 0.8 +
+			Math.sin(i / 50) * 0.5) +
+	200 +
+	i * 2
+
+function generateData(numberOfCandles = 500, updatesPerCandle = 5, startAt = 100) {
+	const createCandle = (val, time) => ({
+		time,
+		open: val,
+		high: val,
+		low: val,
+		close: val,
+	})
+
+	const updateCandle = (candle, val: number) => ({
+		time: candle.time,
+		close: val,
+		open: candle.open,
+		low: Math.min(candle.low, val),
+		high: Math.max(candle.high, val),
+	})
+
+	randomFactor = 25 + Math.random() * 25
+	const date = new Date(Date.UTC(2018, 0, 1, 12, 0, 0, 0))
+	const numberOfPoints = numberOfCandles * updatesPerCandle
+	const initialData = []
+	const realtimeUpdates = []
+	let lastCandle
+	let previousValue = samplePoint(-1)
+	for (let i = 0; i < numberOfPoints; ++i) {
+		if (i % updatesPerCandle === 0) {
+			date.setUTCDate(date.getUTCDate() + 1)
+		}
+		const time = date.getTime() / 1000
+		let value = samplePoint(i)
+		const diff = (value - previousValue) * Math.random()
+		value = previousValue + diff
+		previousValue = value
+		if (i % updatesPerCandle === 0) {
+			const candle = createCandle(value, time)
+			lastCandle = candle
+			if (i >= startAt) {
+				realtimeUpdates.push(candle)
+			}
+		} else {
+			const newCandle = updateCandle(lastCandle, value)
+			lastCandle = newCandle
+			if (i >= startAt) {
+				realtimeUpdates.push(newCandle)
+			} else if ((i + 1) % updatesPerCandle === 0) {
+				initialData.push(newCandle)
+			}
+		}
+	}
+
+	return {
+		initialData,
+		realtimeUpdates,
+	}
+}
 
 const LIGHT_CHART_STYLES = {
 	lineColor: "#2962FF",
@@ -40,22 +107,10 @@ const DARK_CHART_STYLES = {
 	},
 }
 
-const initialData = [
-	{ time: "2018-12-22", value: 32.51 },
-	{ time: "2018-12-23", value: 31.11 },
-	{ time: "2018-12-24", value: 27.02 },
-	{ time: "2018-12-25", value: 27.32 },
-	{ time: "2018-12-26", value: 25.17 },
-	{ time: "2018-12-27", value: 28.89 },
-	{ time: "2018-12-28", value: 25.46 },
-	{ time: "2018-12-29", value: 23.92 },
-	{ time: "2018-12-30", value: 22.68 },
-	{ time: "2018-12-31", value: 22.67 },
-]
-
 const TradeChartSection: FunctionComponent<TradeChartSectionProps> = ({ ...rest }) => {
 	const chartRef = useRef<TradingChartRef>(null)
-	const seriesRef = useRef<ISeriesApi<"Area"> | null>(null)
+
+	const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null)
 
 	const isDark = useIsDarkMode()
 
@@ -69,26 +124,65 @@ const TradeChartSection: FunctionComponent<TradeChartSectionProps> = ({ ...rest 
 		// Fit content and create series
 		chart.timeScale().fitContent()
 
-		// Create area series if it doesn't exist
-		if (!seriesRef.current) {
-			const series = chart.addSeries(AreaSeries, {
-				lineColor: CHART_STYLES.lineColor,
-				topColor: CHART_STYLES.topColor,
-				bottomColor: CHART_STYLES.bottomColor,
-			})
-			series.setData(initialData)
-			seriesRef.current = series
+		const series = chart.addSeries(CandlestickSeries, {
+			upColor: "#26a69a",
+			downColor: "#ef5350",
+			borderVisible: false,
+			wickUpColor: "#26a69a",
+			wickDownColor: "#ef5350",
+		})
+
+		seriesRef.current = series
+
+		const data = generateData(2500, 20, 1000)
+
+		series.setData(data.initialData)
+		chart.timeScale().fitContent()
+		chart.timeScale().scrollToPosition(5, true)
+
+		// simulate real-time data
+		function* getNextRealtimeUpdate(realtimeData) {
+			for (const dataPoint of realtimeData) {
+				yield dataPoint
+			}
+			return null
+		}
+		const streamingDataProvider = getNextRealtimeUpdate(data.realtimeUpdates)
+
+		const intervalID = setInterval(() => {
+			const update = streamingDataProvider.next()
+			if (update.done) {
+				clearInterval(intervalID)
+				return
+			}
+			series.update(update.value)
+		}, 100)
+
+		return () => {
+			clearInterval(intervalID)
 		}
 	}, [])
 
 	// return <TradeCharSectionSkeleton {...rest} />
+
+	// Update chart theme when it changes
+	useEffect(() => {
+		if (!chartRef.current?.chart) return
+
+		chartRef.current.chart.applyOptions({
+			layout: {
+				background: CHART_STYLES.backgroundColor,
+				textColor: CHART_STYLES.textColor,
+			},
+		})
+	}, [CHART_STYLES])
 
 	return (
 		<Card {...rest}>
 			<CardHeader>
 				<CardTitle>Price Chart</CardTitle>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="h-full">
 				<TradingChart
 					ref={chartRef}
 					onChartReady={handleChartReady}
@@ -99,7 +193,7 @@ const TradeChartSection: FunctionComponent<TradeChartSectionProps> = ({ ...rest 
 						},
 					}}
 					height={350}
-					className="w-full bg-gray-950 rounded-lg"
+					className="w-full h-full bg-gray-950 rounded-lg"
 				/>
 			</CardContent>
 		</Card>

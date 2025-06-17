@@ -6,6 +6,7 @@ import { RootProviders } from "@/providers"
 import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/utils/tailwind.utils"
 import FactoryContextProvider from "../modules/home/providers/factory.provider"
+import Header from "@/components/header"
 
 const font = Kode_Mono({ subsets: ["latin"] })
 
@@ -19,7 +20,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 		<html lang="en">
 			<body className={cn(font.className, `min-w-5xl`)}>
 				<RootProviders>
-					<FactoryContextProvider>{children}</FactoryContextProvider>
+					<FactoryContextProvider>
+						<div className="min-h-screen bg-background">
+							<Header />
+							{children}
+						</div>
+					</FactoryContextProvider>
 					<Toaster />
 				</RootProviders>
 			</body>
