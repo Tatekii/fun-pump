@@ -5,9 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import router from "next/router"
 import { FunctionComponent, useState } from "react"
 import { formatEther } from "viem"
-import { useTokenInfo, useTokenCost } from "../provider/token.provider"
+import { useTokenInfo, useTokenCost } from "../providers/token.provider"
 import { useBuyToken } from "@/hooks/use-contract"
-import { useTokenFactoryLimit, useTokenFactoryTarget } from "@/app/providers/factory.provider"
+import { useTokenFactoryLimit, useTokenFactoryTarget } from "@/modules/home/providers/factory.provider"
 
 interface TradePanelSectionProps extends React.ComponentProps<"div"> {}
 

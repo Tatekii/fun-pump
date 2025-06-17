@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react"
+import { FC, useState, useEffect, useCallback } from "react"
 import { formatEther } from "viem"
 import { useCreateToken } from "@/hooks/use-create-token"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/utils/tailwind.utils"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Loader2 } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { ResponsiveModal } from "./responsive-modal"
 import { Label } from "@/components/ui/label"
@@ -106,6 +106,9 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 	const [preview, setPreview] = useState<string>("")
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
+	// icon uploading
+	const [isUploading, setIsUploading] = useState(false)
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: formDefaultValue,
@@ -147,17 +150,11 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			const data = new FormData()
 			data.set("file", values.image)
 
-			// FIXME
-			// const uploadRequest = await fetch("/api/files", {
-			// 	method: "POST",
-			// 	body: data,
-			// })
+			let signedUrl = "debugUrl"
 
-			// if (!uploadRequest.ok) {
-			// 	throw new Error("Failed to upload image")
+			// if (process.env.NODE_ENV !== "development") {
+				signedUrl = await handleUploadIcon(data)
 			// }
-
-			// const signedUrl = await uploadRequest.json()
 
 			// 将斜率转换为合适的单位
 			const curveSlope = BigInt(Math.floor(Number(values.curveSlope) * 1e18))
@@ -168,7 +165,7 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 				values.symbol,
 				startTimestamp,
 				endTimestamp,
-				"debugurl",
+				signedUrl,
 				values.curveType,
 				curveSlope,
 				fee
@@ -180,6 +177,26 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 			setIsSubmitting(false)
 		}
 	}
+
+	const handleUploadIcon = useCallback(async (data: FormData) => {
+		setIsUploading(true)
+		try {
+			const uploadRequest = await fetch("/api/files", {
+				method: "POST",
+				body: data,
+			})
+
+			if (!uploadRequest.ok) {
+				throw new Error("Failed to upload image")
+			}
+			return await uploadRequest.json()
+			// ... rest of your code
+		} catch (error) {
+			console.error(error)
+		} finally {
+			setIsUploading(false)
+		}
+	}, [])
 
 	const handleClose = () => {
 		resetCreateToken() // 重置交易状态
@@ -263,9 +280,17 @@ const CreateTokenModal: FC<CreateTokenModalProps> = ({ toggleCreate, fee, showCr
 												</Button>
 											</div>
 											{preview && (
-												<div className="relative aspect-square w-20 overflow-hidden rounded-lg">
-													{/* eslint-disable-next-line @next/next/no-img-element */}
-													<img src={preview} alt="Preview" className="object-cover" />
+												<div className="relative aspect-square w-20 overflow-hidden rounded-lg mx-auto">
+													<img
+														src={preview}
+														alt="Preview"
+														className="object-cover w-full h-full"
+													/>
+													{isUploading && (
+														<div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+															<Loader2 className="h-5 w-5 animate-spin text-white" />
+														</div>
+													)}
 												</div>
 											)}
 										</div>

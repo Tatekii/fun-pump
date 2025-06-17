@@ -3,11 +3,12 @@
 import { FC, PropsWithChildren } from "react"
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit"
 import { useTheme } from "next-themes"
+import { useIsDarkMode } from "./theme-provider"
 
 const CustomRainbowKitProvider: FC<PropsWithChildren> = ({ children }) => {
-	const { theme } = useTheme()
+	const isDark = useIsDarkMode()
 
-	return <RainbowKitProvider theme={theme === "dark" ? darkTheme() : lightTheme()}>{children}</RainbowKitProvider>
+	return <RainbowKitProvider theme={isDark ? darkTheme() : lightTheme()}>{children}</RainbowKitProvider>
 }
 
 export default CustomRainbowKitProvider

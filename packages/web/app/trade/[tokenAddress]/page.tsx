@@ -1,5 +1,5 @@
 import TradePageClient from "./client"
-import TokenContextProvider from "./provider/token.provider"
+import TokenContextProvider from "../../../modules/trade/providers/token.provider"
 
 export default async function TradePage({
 	params,

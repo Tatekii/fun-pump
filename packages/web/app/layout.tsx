@@ -2,10 +2,10 @@ import { Kode_Mono } from "next/font/google"
 import "../globals.css"
 import { ReactNode } from "react"
 import "@rainbow-me/rainbowkit/styles.css"
-import { Providers } from "@/providers"
+import { RootProviders } from "@/providers"
 import { Toaster } from "@/components/ui/sonner"
 import { cn } from "@/utils/tailwind.utils"
-import FactoryContextProvider from "./providers/factory.provider"
+import FactoryContextProvider from "../modules/home/providers/factory.provider"
 
 const font = Kode_Mono({ subsets: ["latin"] })
 
@@ -18,10 +18,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en">
 			<body className={cn(font.className, `min-w-5xl`)}>
-				<Providers>
+				<RootProviders>
 					<FactoryContextProvider>{children}</FactoryContextProvider>
 					<Toaster />
-				</Providers>
+				</RootProviders>
 			</body>
 		</html>
 	)

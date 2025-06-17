@@ -6,8 +6,8 @@ import { calculateTimeProgress, calculateFundingProgress, formatTimeRemaining, f
 import { Progress } from "@radix-ui/react-progress"
 import React, { FunctionComponent } from "react"
 import { formatEther } from "viem"
-import { useTokenCost, useTokenInfo } from "../provider/token.provider"
-import { useTokenFactoryTarget } from "@/app/providers/factory.provider"
+import { useTokenCost, useTokenInfo } from "../providers/token.provider"
+import { useTokenFactoryTarget } from "@/modules/home/providers/factory.provider"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface TokenInfoSectionProps extends React.ComponentProps<"div"> {}

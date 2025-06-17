@@ -7,11 +7,11 @@ import { ThemeProvider } from "./theme-provider"
 import CustomRainbowKitProvider from "./rainbowkit-provider"
 import WagmiProvider from "./wagmi-provider"
 
-export function Providers({ children }: { children: ReactNode }) {
+export function RootProviders({ children }: { children: ReactNode }) {
 	const [queryClient] = useState(() => new QueryClient())
 
 	return (
-		<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+		<ThemeProvider>
 			<WagmiProvider>
 				<QueryClientProvider client={queryClient}>
 					<CustomRainbowKitProvider>{children}</CustomRainbowKitProvider>

@@ -4,9 +4,9 @@ import { FunctionComponent, useContext } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
-import TokenInfoSection from "./sections/token-info.section"
-import TradeChartSection from "./sections/trade-chart.section"
-import TradePanelSection from "./sections/trade-panel.section"
+import TokenInfoSection from "../../../modules/trade/sections/token-info.section"
+import TradeChartSection from "../../../modules/trade/sections/trade-chart.section"
+import TradePanelSection from "../../../modules/trade/sections/trade-panel.section"
 
 interface TradePageClientProps {}
 
