@@ -7,6 +7,10 @@ import { ModeToggle } from "./mode-toggle"
 const Header: FC = () => {
 	const { address } = useAccount()
 
+
+	console.log(address);
+	
+
 	return (
 		<header className="col-[2/12] flex justify-between items-center p-6">
 			<div className="text-4xl -rotate-5 flex gap-2">

@@ -1,42 +1,42 @@
 {
-	"compilerOptions": {
-		"target": "es2022",
-		"lib": ["dom", "dom.iterable", "esnext", "ESNext.Array", "ESNext.AsyncIterable"],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"noEmit": true,
-		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "bundler",
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"jsx": "preserve",
-		"incremental": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./*"],
-			"@app/*": ["./app/*"],
-			"@components/*": ["./components/*"],
-			"@lib/*": ["./lib/*"],
-			"@contracts/*": ["../smart-contract/contracts/*"],
-			"@artifacts/*": ["../smart-contract/artifacts/contracts/*"],
-			"@typechain/*": ["../smart-contract/typechain-types/*"]
-		}
-	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".next/types/**/*.ts",
-		"./app/**/*.ts",
-		"./app/**/*.tsx",
-		"./generated.ts"
-	],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": ["dom", "dom.iterable", "esnext", "ESNext.Array", "ESNext.AsyncIterable"],
+    "allowJs": true,
+    "skipLibCheck": false,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "types": ["node", "jest", "@testing-library/jest-dom", "vitest"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@app/*": ["./app/*"],
+      "@components/*": ["./components/*"],
+      "@lib/*": ["./lib/*"],
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "./app/**/*.ts",
+    "./app/**/*.tsx",
+    "./generated.ts",
+    "vitest.setup.tsx",
+    "vitest.d.ts"
+  ],
+  "exclude": ["node_modules"]
 }
