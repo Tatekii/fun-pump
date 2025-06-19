@@ -3,27 +3,28 @@
 	"version": "0.2.0",
 	"private": false,
 	"description": "Smart contracts for Fun Pump - Crowdfunding platform",
-	"main": "dist/index.ts",
-	"types": "dist/index.ts",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"files": [
-		"dist",
-		"artifacts/contracts/**/*.json"
+		"dist"
 	],
 	"scripts": {
 		"compile": "bun hardhat compile",
 		"test": "bun hardhat test",
-		"deploy": "bun hardhat ignition deploy ignition/modules/deploy.js",
-		"deploy:local": "bun hardhat ignition deploy ignition/modules/deploy.js --network localhost",
-		"deploy:local:reset": "bun hardhat ignition deploy ignition/modules/deploy.js --reset --network localhost",
+		"deploy": "bun hardhat ignition deploy ignition/modules/deploy.js && bun run update-subgraph",
+		"deploy:local": "bun hardhat ignition deploy ignition/modules/deploy.js --network localhost && bun run update-subgraph localhost",
+		"deploy:local:reset": "bun hardhat ignition deploy ignition/modules/deploy.js --reset --network localhost && bun run update-subgraph localhost",
 		"node": "bun hardhat node",
 		"verify": "bun hardhat verify",
 		"verify:local": "bun hardhat verify --network localhost",
 		"typecheck": "bun tsc --noEmit",
 		"build:wagmi": "bun wagmi generate",
 		"build:copy": "cp -r src/* dist/",
-		"build": "bun run clear:dist && bun run compile && bun run build:wagmi && bun run build:copy",
+		"build:abis": "bun run scripts/extract-abis.js",
+		"build": "bun run clear:dist && bun run compile && bun run build:wagmi && bun run build:copy && bun run build:abis",
 		"prepublishOnly": "bun run build",
 		"update-address": "bun run scripts/update-address.js",
+		"update-subgraph": "bun run scripts/update-subgraph.js",
 		"clear:dist": "rm -rf ./dist && mkdir -p ./dist"
 	},
 	"dependencies": {
