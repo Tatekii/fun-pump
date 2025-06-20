@@ -7,6 +7,7 @@ export default config
 
 export type Conf = typeof config
 
-declare module 'tamagui' {
+// make imports typed
+declare module '@tamagui/core' {
   interface TamaguiCustomConfig extends Conf {}
 }

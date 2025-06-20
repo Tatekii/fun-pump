@@ -7,7 +7,7 @@ const { withTamagui } = require('@tamagui/metro-plugin')
 
 const config = getDefaultConfig(__dirname, {
   // [Web-only]: Enables CSS support in Metro.
-  isCSSEnabled: true,
+  // isCSSEnabled: true,
 })
 
 config.resolver.sourceExts.push('mjs')
