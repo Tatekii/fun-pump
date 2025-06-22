@@ -1,75 +1,60 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import type { SizeTokens } from 'tamagui'
+import { Button, Input, TextArea, XStack, YStack, ZStack } from 'tamagui'
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function HomePage() {
+	return (
+    <XStack maxWidth={250} padding="$2" alignSelf="center" gap="$2">
+      <YStack
+        borderWidth={2}
+        borderColor="$color"
+        borderRadius="$4"
+        gap="$2"
+        padding="$2"
+      >
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+      </YStack>
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+      <XStack
+        borderWidth={2}
+        borderColor="$color"
+        borderRadius="$4"
+        gap="$2"
+        padding="$2"
+      >
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+        <YStack backgroundColor="$color" borderRadius="$3" padding="$2" />
+      </XStack>
+
+      <ZStack maxWidth={50} maxHeight={85} width={100} flex={1}>
+        <YStack
+          fullscreen
+          borderRadius="$4"
+          padding="$2"
+          borderColor="$color"
+          borderWidth={2}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+        <YStack
+          borderColor="$color"
+          fullscreen
+          y={10}
+          x={10}
+          borderWidth={2}
+          borderRadius="$4"
+          padding="$2"
+        />
+        <YStack
+          borderColor="$color"
+          fullscreen
+          y={20}
+          x={20}
+          borderWidth={2}
+          borderRadius="$4"
+          padding="$2"
+        />
+      </ZStack>
+    </XStack>
+	)
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

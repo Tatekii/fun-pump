@@ -1,6 +1,3 @@
-import { AppKit, createAppKit, defaultWagmiConfig } from "@reown/appkit-wagmi-react-native"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { arbitrum, mainnet, polygon } from "@wagmi/core/chains"
 import "@walletconnect/react-native-compat"
 import { WagmiProvider } from "wagmi"
 
@@ -11,41 +8,17 @@ import { StatusBar } from "expo-status-bar"
 import "react-native-reanimated"
 
 import { useColorScheme } from "@/hooks/useColorScheme"
+import MyWagmiProvider from "@/providers/wagmi.provider"
 
-// 0. Setup queryClient
-const queryClient = new QueryClient()
-
-// 1. Get projectId at https://cloud.reown.com
-const projectId = "YOUR_PROJECT_ID"
-
-// 2. Create config
-const metadata = {
-	name: "AppKit RN",
-	description: "AppKit RN Example",
-	url: "https://reown.com/appkit",
-	icons: ["https://avatars.githubusercontent.com/u/179229932"],
-	redirect: {
-		native: "YOUR_APP_SCHEME://",
-		universal: "YOUR_APP_UNIVERSAL_LINK.com",
-	},
-}
-
-const chains = [mainnet, polygon, arbitrum] as const
-
-const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata })
-
-// 3. Create modal
-createAppKit({
-	projectId,
-	wagmiConfig,
-	defaultChain: mainnet, // Optional
-	enableAnalytics: true, // Optional - defaults to your Cloud configuration
-})
+import { TamaguiProvider } from "tamagui"
+import { tamaguiConfig } from "@/tamagui.config"
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
+
 	const [loaded] = useFonts({
-		SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+		Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+		InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
 	})
 
 	if (!loaded) {
@@ -54,17 +27,16 @@ export default function RootLayout() {
 	}
 
 	return (
-		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<WagmiProvider config={wagmiConfig}>
-				<QueryClientProvider client={queryClient}>
+		<TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+				<MyWagmiProvider>
 					<Stack>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 						<Stack.Screen name="+not-found" />
 					</Stack>
-					<StatusBar style="auto" />
-					<AppKit />
-				</QueryClientProvider>
-			</WagmiProvider>
-		</ThemeProvider>
+				</MyWagmiProvider>
+				<StatusBar style="auto" />
+			</ThemeProvider>
+		</TamaguiProvider>
 	)
 }
