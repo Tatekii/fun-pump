@@ -2,9 +2,9 @@ import { createTamagui } from '@tamagui/core'
 import { defaultConfig } from '@tamagui/config/v4'
 
 // you usually export this from a tamagui.config.ts file
-export const tamaguiConfig = createTamagui(defaultConfig)
+export const config = createTamagui(defaultConfig)
 
-type CustomConfig = typeof tamaguiConfig
+type CustomConfig = typeof config
 
 // make imports typed
 declare module 'tamagui' {

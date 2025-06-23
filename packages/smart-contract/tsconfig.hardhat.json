@@ -12,16 +12,16 @@
     "skipLibCheck": true,
     "allowJs": true,
     "strict": true,
-    "types": ["node", "mocha", "chai"],
+    "types": ["node", "mocha", "chai","hardhat"],
     "paths": {
       "*": ["./node_modules/*"]
     }
   },
   "include": [
-    "hardhat.config.ts",
+    "hardhat.config.cjs",
     "./test",
     "./typechain-types"
   ],
-  "files": ["hardhat.config.ts"],
+  "files": ["hardhat.config.cjs"],
   "exclude": ["node_modules"]
 }

@@ -20,7 +20,6 @@
     "./typechain-types/**/*.ts",
     "./scripts/**/*.ts",
     "./ignition/**/*.js",
-    "./ignition/**/*.ts",
-    "hardhat.config.js"
+    "./ignition/**/*.ts"
   ]
 }

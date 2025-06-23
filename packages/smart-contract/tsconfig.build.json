@@ -12,7 +12,6 @@
     "test",
     "typechain-types",
     "scripts",
-    "ignition",
-    "hardhat.config.ts"
+    "ignition"
   ]
 }

@@ -12,8 +12,11 @@ export default {
 		ios: {
 			supportsTablet: true,
 			infoPlist: {
-				
 				LSApplicationQueriesSchemes: ["metamask", "trust", "safe", "rainbow", "uniswap"],
+				// FIXME
+				NSAppTransportSecurity: {
+					NSAllowsArbitraryLoads: true,
+				},
 			},
 		},
 		plugins: [

@@ -1,5 +1,4 @@
 import "@walletconnect/react-native-compat"
-import { WagmiProvider } from "wagmi"
 
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
 import { useFonts } from "expo-font"
@@ -11,7 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme"
 import MyWagmiProvider from "@/providers/wagmi.provider"
 
 import { TamaguiProvider } from "tamagui"
-import { tamaguiConfig } from "@/tamagui.config"
+import { config } from "@/tamagui.config"
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme()
@@ -27,13 +26,10 @@ export default function RootLayout() {
 	}
 
 	return (
-		<TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+		<TamaguiProvider config={config} defaultTheme={colorScheme!}>
 			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 				<MyWagmiProvider>
-					<Stack>
-						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-						<Stack.Screen name="+not-found" />
-					</Stack>
+					<Stack/>
 				</MyWagmiProvider>
 				<StatusBar style="auto" />
 			</ThemeProvider>
